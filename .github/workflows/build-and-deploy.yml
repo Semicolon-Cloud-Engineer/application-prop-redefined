@@ -1,0 +1,144 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+env:
+  S3_BUCKET_NAME: your-s3-bucket-name
+  S3_REGION: your-s3-region
+  ECR_REPOSITORY: your-ecr-repository
+  ECS_CLUSTER: your-ecs-cluster
+  ECS_SERVICE: your-ecs-service
+  EMAILS: 'oluwakusejoshua@gmail.com.com, kusejoshua@gmail.com'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 18
+        uses: actions/setup-java@v2
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Set environment variables
+        id: vars
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          TAG="commit-${COMMIT_HASH}-timestamp-${TIMESTAMP}"
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "JAR_NAME=onboarding-${TAG}.jar" >> $GITHUB_ENV
+
+      - name: Rename and copy JAR file to folder
+        run: |
+          mkdir -p jars
+          cp target/*.jar "jars/${{ env.JAR_NAME }}"
+
+      - name: Upload JAR to S3
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ env.S3_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.S3_REGION }}
+          SOURCE_DIR: 'jars'
+          DEST_DIR: '/'
+
+      - name: Build and Tag Docker image
+        run: |
+          docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.TAG }} .
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Push Docker image to ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.S3_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY }}
+          docker push ${{ env.ECR_REPOSITORY }}:${{ env.TAG }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Deploy to ECS
+        run: |
+          ecs-deploy -c ${{ env.ECS_CLUSTER }} -n ${{ env.ECS_SERVICE }} -i ${{ env.ECR_REPOSITORY }}:${{ env.TAG }} --timeout 360
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Send success notification
+        if: success()
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          curl --request POST \
+            --url https://api.sendgrid.com/v3/mail/send \
+            --header "Authorization: Bearer $SENDGRID_API_KEY" \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "personalizations": [
+                {
+                  "to": [
+                    {
+                      "email": "${{ env.EMAILS }}"
+                    }
+                  ],
+                  "subject": "Build and Deployment Success"
+                }
+              ],
+              "from": {
+                "email": "notifications@your-domain.com"  // Replace with your verified sender address
+              },
+              "content": [
+                {
+                  "type": "text/plain",
+                  "value": "The build and deployment were successful. TAG: ${{ env.TAG }}"
+                }
+              ]
+            }'
+      
+
+      - name: Send failure notification
+        if: failure()
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          curl --request POST \
+            --url https://api.sendgrid.com/v3/mail/send \
+            --header "Authorization: Bearer $SENDGRID_API_KEY" \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "personalizations": [
+                {
+                  "to": [
+                    {
+                      "email": "${{ env.EMAILS }}"
+                    }
+                  ],
+                  "subject": "Build Failure"
+                }
+              ],
+              "from": {
+                "email": "labs@enum.africa" 
+              },
+              "content": [
+                {
+                  "type": "text/plain",
+                  "value": "The build and deployment failed. TAG: ${{ env.TAG }}"
+                }
+              ]
+            }'
+        
+         

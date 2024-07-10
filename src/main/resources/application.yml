@@ -1,0 +1,45 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  application:
+    name: IDENTITYSERVICE
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/onboarding
+    username: postgres
+    password: Administrator
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+server:
+  port: 8085
+
+
+# spring:
+#   datasource:
+#     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/onboarding}
+#     username: ${DATABASE_USERNAME:postgres}
+#     password: ${DATABASE_PASSWORD:Administrator}
+#     driver-class-name: org.postgresql.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         format_sql: true
+#     database: postgresql
+
+# server:
+#   port: 8085

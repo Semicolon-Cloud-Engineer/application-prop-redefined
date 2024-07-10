@@ -1,0 +1,11 @@
+package com.example.OnboardingIdentityManagementService.application.ports.input;
+
+import com.example.OnboardingIdentityManagementService.domain.exception.BusinessPartyException;
+import com.example.OnboardingIdentityManagementService.domain.model.businessParty.BusinessPartyDomainObject;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.businessParty.CreateBusinessPartyRequest;
+
+public interface CreateBusinessPartyUseCase {
+
+    BusinessPartyDomainObject createBusinessParty(CreateBusinessPartyRequest businessPartyRequest) throws BusinessPartyException;
+
+}
