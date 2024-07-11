@@ -1,144 +1,70 @@
-name: Build and Deploy
+name: Deploy Systest to Amazon ECS
 
 on:
   push:
-    branches:
-      - 'dev'
+    branches: 
+      - dev
 
 env:
-  S3_BUCKET_NAME: your-s3-bucket-name
-  S3_REGION: your-s3-region
-  ECR_REPOSITORY: your-ecr-repository
-  ECS_CLUSTER: your-ecs-cluster
-  ECS_SERVICE: your-ecs-service
-  EMAILS: 'oluwakusejoshua@gmail.com.com, kusejoshua@gmail.com'
-
+  REPO_URL: 357586184453.dkr.ecr.eu-west-1.amazonaws.com/identity-management-dev-backend
+  ECR_REPOSITORY: identity-management-dev-backend
+  AWS_REGION: eu-west-1
+  CLUSTER: identity
+  SERVICE: identity_management
+  
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 18
-        uses: actions/setup-java@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          java-version: '18'
+          java-version: '17'
           distribution: 'temurin'
+          cache: maven
 
-      - name: Build with Maven
-        run: mvn clean package
-
-      - name: Set environment variables
-        id: vars
-        run: |
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          TAG="commit-${COMMIT_HASH}-timestamp-${TIMESTAMP}"
-          echo "TAG=${TAG}" >> $GITHUB_ENV
-          echo "JAR_NAME=onboarding-${TAG}.jar" >> $GITHUB_ENV
-
-      - name: Rename and copy JAR file to folder
-        run: |
-          mkdir -p jars
-          cp target/*.jar "jars/${{ env.JAR_NAME }}"
-
-      - name: Upload JAR to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Restore Maven Cache
+        uses: actions/cache@v2
         with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ env.S3_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ env.S3_REGION }}
-          SOURCE_DIR: 'jars'
-          DEST_DIR: '/'
-
-      - name: Build and Tag Docker image
-        run: |
-          docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.TAG }} .
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Push Docker image to ECR
-        run: |
-          aws ecr get-login-password --region ${{ env.S3_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY }}
-          docker push ${{ env.ECR_REPOSITORY }}:${{ env.TAG }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deploy to ECS
-        run: |
-          ecs-deploy -c ${{ env.ECS_CLUSTER }} -n ${{ env.ECS_SERVICE }} -i ${{ env.ECR_REPOSITORY }}:${{ env.TAG }} --timeout 360
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Send success notification
-        if: success()
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: |
-          curl --request POST \
-            --url https://api.sendgrid.com/v3/mail/send \
-            --header "Authorization: Bearer $SENDGRID_API_KEY" \
-            --header 'Content-Type: application/json' \
-            --data '{
-              "personalizations": [
-                {
-                  "to": [
-                    {
-                      "email": "${{ env.EMAILS }}"
-                    }
-                  ],
-                  "subject": "Build and Deployment Success"
-                }
-              ],
-              "from": {
-                "email": "notifications@your-domain.com"  // Replace with your verified sender address
-              },
-              "content": [
-                {
-                  "type": "text/plain",
-                  "value": "The build and deployment were successful. TAG: ${{ env.TAG }}"
-                }
-              ]
-            }'
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-      - name: Send failure notification
-        if: failure()
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+
         run: |
-          curl --request POST \
-            --url https://api.sendgrid.com/v3/mail/send \
-            --header "Authorization: Bearer $SENDGRID_API_KEY" \
-            --header 'Content-Type: application/json' \
-            --data '{
-              "personalizations": [
-                {
-                  "to": [
-                    {
-                      "email": "${{ env.EMAILS }}"
-                    }
-                  ],
-                  "subject": "Build Failure"
-                }
-              ],
-              "from": {
-                "email": "labs@enum.africa" 
-              },
-              "content": [
-                {
-                  "type": "text/plain",
-                  "value": "The build and deployment failed. TAG: ${{ env.TAG }}"
-                }
-              ]
-            }'
-        
-         
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service --cluster ${{ env.CLUSTER }} --service ${{ env.SERVICE }} --force-new-deployment
