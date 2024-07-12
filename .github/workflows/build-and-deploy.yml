@@ -59,6 +59,7 @@ jobs:
             IDENTITY_SERVICE_APPLICATION_NAME: ${{ secrets.IDENTITY_SERVICE_APPLICATION_NAME }}
             MASTER_REALM_CLIENT_SECRET: ${{ env.MASTER_REALM_CLIENT_SECRET }}
             ADMIN_CLIENT_SECRET: ${{ env.ADMIN_CLIENT_SECRET }}
+            PORT: ${{ secrets.PORT }}
 
             QORE_ID_CLIENT_ID: ${{ secrets.QORE_ID_CLIENT_ID }}
             QORE_ID_CLIENT_SECRET: ${{ secrets.QORE_ID_CLIENT_SECRET }}
