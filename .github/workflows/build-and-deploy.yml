@@ -37,7 +37,6 @@ jobs:
 
       - name: Maven Verify
         run: mvn -B clean verify
-             echo "this is the db url DATABASE_URL=${{ env.DATABASE_URL }}"
 
       - name: Maven Test
         env:
