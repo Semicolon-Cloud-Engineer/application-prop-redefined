@@ -78,7 +78,7 @@ jobs:
             
         run: mvn -B clean verify
 
-      - name: Maven Generate report
+     # - name: Maven Generate report
        # run: mvn surefire-report:report
 
       - name: Configure AWS credentials
