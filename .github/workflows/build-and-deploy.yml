@@ -57,7 +57,7 @@ jobs:
             KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
             CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
             EUREKA_URL: ${{ secrets.EUREKA_URL }}
-            PROFILE: local
+            PROFILE: ${{ secrets.PROFILE }}
             IDENTITY_SERVICE_APPLICATION_NAME: ${{ secrets.IDENTITY_SERVICE_APPLICATION_NAME }}
 
             QORE_ID_CLIENT_ID: ${{ secrets.QORE_ID_CLIENT_ID }}
