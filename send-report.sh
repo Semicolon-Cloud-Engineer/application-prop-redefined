@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPORT_DIR=target/surefire-reports
-LOCAL_URL=http://localhost:8086/report
+LOCAL_URL=http://localhost:8095/report
 HOSTED_URL=https://yourdomain.com/report
 
 # Determine the target URL based on the environment
