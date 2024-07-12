@@ -4,7 +4,7 @@ import com.example.OnboardingIdentityManagementService.domain.exception.Keycloak
 import com.example.OnboardingIdentityManagementService.domain.exception.UserException;
 import com.example.OnboardingIdentityManagementService.domain.services.keycloak.KeycloakService;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.karrabo.KarraboRequest;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import org.junit.jupiter.api.Test;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 
@@ -20,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@ActiveProfiles("local")
 @Slf4j
 class KeycloakServiceImplementationTest {
 

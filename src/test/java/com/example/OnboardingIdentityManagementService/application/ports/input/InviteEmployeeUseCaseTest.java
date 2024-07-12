@@ -19,14 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles("local")
 @Slf4j
 class InviteEmployeeUseCaseTest {
 
@@ -60,7 +58,7 @@ class InviteEmployeeUseCaseTest {
     @Test
     void getInviteEmployeeResponseObjectFromEmployeeAccountMethodTest() {
         EmployeeDomainObject domainObject = new EmployeeDomainObject();
-        domainObject.setId(12334L);
+        domainObject.setId("12334");
         KarraboPlatformUser platformUser = new KarraboPlatformUser();
         platformUser.setFirstName(firstName);
         platformUser.setLastName(lastName);
@@ -68,13 +66,13 @@ class InviteEmployeeUseCaseTest {
         InviteEmployeeResponse response = EmployeeService.getInviteEmployeeResponseObjectFromEmployeeAccount(domainObject);
         assertEquals(firstName, response.getFirstName());
         assertEquals(lastName, response.getLastName());
-        assertEquals(12334L, response.getId());
+        assertEquals("12334", response.getId());
     }
 
     @Test
     void inviteEmployee() {
         when(userRepository.save(any())).thenReturn(new KarraboPlatformUser("falseId",new KarraboBusinessParty(), firstName, lastName, email));
-        when(employeeRepository.save(any())).thenReturn(new OrganizationEmployee(12345L, new KarraboOrganization(),
+        when(employeeRepository.save(any())).thenReturn(new OrganizationEmployee("12345", new KarraboOrganization(),
                 new KarraboPlatformUser("falseId",new KarraboBusinessParty(), firstName, lastName, email)));
         InviteEmployeeRequest inviteEmployeeRequest = new InviteEmployeeRequest();
         inviteEmployeeRequest.setEmail(email);
@@ -98,7 +96,7 @@ class InviteEmployeeUseCaseTest {
         assertNotNull(response);
         assertEquals(firstName, response.getFirstName());
         assertEquals(lastName, response.getLastName());
-        assertEquals(12345L, response.getId());
+        assertEquals("12345", response.getId());
     }
 
     @Test

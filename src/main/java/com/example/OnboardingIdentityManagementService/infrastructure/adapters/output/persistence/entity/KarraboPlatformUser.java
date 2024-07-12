@@ -1,9 +1,11 @@
 package com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
 
-@Entity
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,14 +16,12 @@ public class KarraboPlatformUser {
     @Id
     private String userId;
 
-    @OneToOne
     private KarraboBusinessParty businessParty;
 
     private String firstName;
 
     private String lastName;
 
-    @Column(unique = true)
     private String email;
 
 }

@@ -1,6 +1,6 @@
 package com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization;
 
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

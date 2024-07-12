@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS karrabo_organization (
 );
 
 CREATE TABLE IF NOT EXISTS karrabo_platform_user (
-                                     organization_id VARCHAR(255) PRIMARY KEY,
+                                     user_id VARCHAR(255) PRIMARY KEY,
                                      first_name VARCHAR(500),
                                      last_name VARCHAR(500),
                                      email VARCHAR(500) UNIQUE,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS karrabo_platform_user (
 CREATE TABLE IF NOT EXISTS organization_employee (
                                     id bigserial PRIMARY KEY,
                                     employee_id VARCHAR(255) CONSTRAINT fk_org_employee_employee
-                                        REFERENCES karrabo_platform_user(organization_id)
+                                        REFERENCES karrabo_platform_user(user_id)
                                             ON DELETE RESTRICT,
                                     organization_id VARCHAR(255) CONSTRAINT fk_org_employee_organization_constraint
                                         REFERENCES karrabo_organization(organization_id)

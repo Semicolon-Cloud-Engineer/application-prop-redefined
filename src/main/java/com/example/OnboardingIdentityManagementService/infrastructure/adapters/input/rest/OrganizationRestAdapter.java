@@ -5,9 +5,9 @@ import com.example.OnboardingIdentityManagementService.domain.exception.Organiza
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.InviteOrganizationRequest;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.response.karrabo.ApiResponse;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.response.organization.InviteOrganizationResponse;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ResponseConstants;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.SwaggerUiConstants;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.UrlConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ResponseConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.SwaggerUiConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.UrlConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

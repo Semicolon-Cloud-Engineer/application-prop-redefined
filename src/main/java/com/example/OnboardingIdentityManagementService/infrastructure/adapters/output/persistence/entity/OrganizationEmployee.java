@@ -1,24 +1,23 @@
 package com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 
-@Entity
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
+@Document
 public class OrganizationEmployee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     private KarraboOrganization organization;
 
-    @OneToOne
     private KarraboPlatformUser employee;
 
 }

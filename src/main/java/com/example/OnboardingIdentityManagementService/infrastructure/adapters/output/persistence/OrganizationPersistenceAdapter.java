@@ -3,7 +3,7 @@ package com.example.OnboardingIdentityManagementService.infrastructure.adapters.
 import com.example.OnboardingIdentityManagementService.application.ports.output.organization.OrganizationOutputPort;
 import com.example.OnboardingIdentityManagementService.domain.exception.InvalidArgumentException;
 import com.example.OnboardingIdentityManagementService.domain.model.organization.OrganizationDomainObject;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboOrganization;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;

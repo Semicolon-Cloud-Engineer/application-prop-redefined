@@ -2,7 +2,7 @@ package com.example.OnboardingIdentityManagementService.domain.validtor.general;
 
 import com.example.OnboardingIdentityManagementService.domain.exception.InvalidArgumentException;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.businessParty.CreateBusinessPartyRequest;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import org.apache.commons.lang3.StringUtils;
 
 public class BusinessPartyValidator {

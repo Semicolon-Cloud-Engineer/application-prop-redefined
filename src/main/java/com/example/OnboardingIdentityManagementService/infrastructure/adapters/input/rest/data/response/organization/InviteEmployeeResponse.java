@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class InviteEmployeeResponse {
 
-    private Long id;
+    private String id;
 
     private String firstName;
 

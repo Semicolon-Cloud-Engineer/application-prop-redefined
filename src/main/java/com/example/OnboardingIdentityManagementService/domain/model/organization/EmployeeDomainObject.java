@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 public class EmployeeDomainObject {
 
-    private Long id;
+    private String id;
 
     private KarraboOrganization organization;
 

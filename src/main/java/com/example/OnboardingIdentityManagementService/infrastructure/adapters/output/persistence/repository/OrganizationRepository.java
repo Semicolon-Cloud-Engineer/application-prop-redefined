@@ -1,9 +1,11 @@
 package com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository;
 
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboOrganization;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-public interface OrganizationRepository extends JpaRepository<KarraboOrganization, String> {
+@Repository
+public interface OrganizationRepository extends MongoRepository<KarraboOrganization, String> {
 
     boolean existsByCompanyNumber(String companyNumber);
 

@@ -3,10 +3,11 @@ package com.example.OnboardingIdentityManagementService.infrastructure.adapters.
 
 import com.example.OnboardingIdentityManagementService.domain.model.enums.OperationStatus;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.enums.KarraboOrganizationType;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -17,7 +18,6 @@ public class KarraboOrganization {
     @Id
     private String organizationId;
 
-    @OneToOne
     private KarraboBusinessParty businessParty;
 
     private String companyNumber;
@@ -28,12 +28,10 @@ public class KarraboOrganization {
 
     private String headOfficeAddress;
 
-    @Enumerated(EnumType.STRING)
     private OperationStatus operationStatus;
 
     private String nameOfDirector;
 
-    @Enumerated(EnumType.STRING)
     private KarraboOrganizationType organizationType;
 
 }

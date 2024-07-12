@@ -8,7 +8,7 @@ import com.example.OnboardingIdentityManagementService.infrastructure.adapters.c
 import com.example.OnboardingIdentityManagementService.domain.exception.KeycloakException;
 import com.example.OnboardingIdentityManagementService.domain.exception.UserException;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.karrabo.KarraboRequest;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;

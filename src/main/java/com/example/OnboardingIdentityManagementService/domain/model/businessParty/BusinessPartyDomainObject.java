@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BusinessPartyDomainObject {
 
-    private Long karraboBusinessPartyId;
+    private String karraboBusinessPartyId;
 
     private String fullName;
 

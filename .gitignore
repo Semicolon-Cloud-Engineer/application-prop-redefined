@@ -22,3 +22,5 @@ target
 rabbitmq-data
 rabbitmq-data/
 pulsar-data
+
+.github

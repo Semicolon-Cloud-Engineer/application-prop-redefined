@@ -1,7 +1,7 @@
 package com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization;
 
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.businessParty.CreateBusinessPartyRequest;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboOrganization;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

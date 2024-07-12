@@ -5,7 +5,7 @@ import com.example.OnboardingIdentityManagementService.domain.exception.Keycloak
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.config.IdentityManagerContext;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.karrabo.KarraboRequest;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.InviteEmployeeRequest;
-import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.utils.constants.ExceptionMessageConstants;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.messageConstants.ExceptionMessageConstants;
 import com.example.OnboardingIdentityManagementService.domain.services.keycloak.KeycloakService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
