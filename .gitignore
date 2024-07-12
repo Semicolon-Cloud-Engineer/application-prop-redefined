@@ -16,7 +16,6 @@ build/
 
 ### VS Code ###
 .vscode/
-src/main/resources/application-local.properties
 target/
 target
 rabbitmq-data
