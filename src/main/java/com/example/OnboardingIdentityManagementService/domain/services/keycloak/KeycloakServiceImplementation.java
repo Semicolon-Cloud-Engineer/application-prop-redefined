@@ -43,6 +43,9 @@ public class KeycloakServiceImplementation implements KeycloakService {
         if (StringUtils.isEmpty(clientName)) {
             throw new KeycloakException("Client name cannot be empty");
         }
+        if (doesClientExist(clientName)) {
+            throw new KeycloakException(ExceptionMessageConstants.ORGANIZATION_CLIENT_ALREADY_EXISTS);
+        }
         ClientRepresentation clientRepresentation = new ClientRepresentation();
         clientRepresentation.setClientId(clientName);
         clientRepresentation.setDirectAccessGrantsEnabled(Boolean.TRUE);
