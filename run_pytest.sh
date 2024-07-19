@@ -1,24 +1,30 @@
 #!/bin/bash
 
-# Path to your Python project
-PYTHON_PROJECT_PATH="https://github.com/Tharolloo/Identity-Management_QA"
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Navigate to the Python project directory
-cd "$PYTHON_PROJECT_PATH" || exit
+# Clone the target repository
+git clone https://github.com/Tharolloo/Identity-Management_QA.git
+
+# Navigate to the cloned repository
+cd Identity-Management_QA
 
 # Create and activate a virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# Install pytest and requirements
+# Install pytest and other requirements
 pip install pytest
 pip install -r requirements.txt
 
-# Run pytest
+# Run the tests
 pytest --junitxml=pytest-results.xml
 
 # Deactivate the virtual environment
 deactivate
 
-# Navigate back to the original directory (optional)
-cd - || exit
+# Navigate back to the original directory
+cd ..
+
+# Clean up (optional, remove if you want to keep the cloned repo)
+rm -rf Identity-Management_QA
