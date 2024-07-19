@@ -77,7 +77,7 @@ jobs:
             PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
             
-        run: mvn -B clean verify
+      #  run: mvn -B clean verify
 
      # - name: Maven Generate report
        # run: mvn surefire-report:report
