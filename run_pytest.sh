@@ -9,7 +9,7 @@ git clone https://${REPO_PAT}@github.com/Tharolloo/Identity_Management_ServiceQA
 # Navigate to the cloned repository
 ls
 pwd
-cd ./Identity_Management_ServiceQA
+cd ${{ github.workspace }}/Identity_Management_ServiceQA
 
 # Create and activate a virtual environment
 python3 -m venv venv
