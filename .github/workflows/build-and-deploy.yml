@@ -41,6 +41,8 @@ jobs:
           python-version: '3.12.3'
 
       - name: Run automation test
+        env:
+          REPO_PAT: ${{ secrets.REPO_PAT }}
         run: |
           chmod +x ${{ github.workspace }}/run_pytest.sh
           ${{ github.workspace }}/run_pytest.sh
