@@ -36,7 +36,7 @@ jobs:
         run: mvn -B clean package -DskipTests
 
       - name: run automation test
-        run: ../run_pytest.bat
+        run: ../../run_pytest.bat
 
       # - name: Maven Verify
       #   run: mvn -B clean verify
