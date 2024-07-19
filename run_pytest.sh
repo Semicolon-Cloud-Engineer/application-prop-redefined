@@ -8,6 +8,7 @@ git clone https://${REPO_PAT}@github.com/Tharolloo/Identity_Management_ServiceQA
 
 # Navigate to the cloned repository
 ls
+pwd
 cd Identity-Management/Identity-Management/Identity_Management_ServiceQA
 
 # Create and activate a virtual environment
