@@ -35,8 +35,14 @@ jobs:
       - name: Maven Package
         run: mvn -B clean package -DskipTests
 
-      - name: run automation test
-        run: ./../run_pytest.bat
+      - name: Install Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install wine32
+
+      - name: Run automation test
+        run: wine ${{ github.workspace }}/run_pytest.bat
 
       # - name: Maven Verify
       #   run: mvn -B clean verify
