@@ -4,7 +4,7 @@
 set -e
 
 # Clone the target repository
-git clone https://${REPO_PAT}@github.com/Tharolloo/Identity_Management_ServiceQA.git
+git clone https://${REPO_PAT}@github.com/Tharolloo/Identity_Management_QA.git
 
 # Navigate to the cloned repository
 ls
