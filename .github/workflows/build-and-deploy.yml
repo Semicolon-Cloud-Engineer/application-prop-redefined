@@ -103,8 +103,8 @@ jobs:
         run: |
           aws ecs update-service --cluster ${{ env.CLUSTER }} --service ${{ env.SERVICE }} --force-new-deployment
 
-      - name: Wait for 10 minutes
-        run: sleep 600
+      # - name: Wait for 10 minutes
+      #   run: sleep 600
 
       - name: Set up Python
         uses: actions/setup-python@v2
