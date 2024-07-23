@@ -33,64 +33,45 @@ jobs:
           cache: maven
 
       - name: Maven Package
-        run: mvn -B clean package -DskipTests
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.12.3'
-
-      - name: Run automation test
         env:
-          REPO_PAT: ${{ secrets.REPO_PAT }}
-        run: |
-          chmod +x ${{ github.workspace }}/run_pytest.sh
-          ${{ github.workspace }}/run_pytest.sh
-        shell: bash
+            DATABASE_URL: ${{ env.DATABASE_URL }}
+            DATABASE_NAME: ${{ env.DATABASE_NAME }}
+            KEYCLOAK_INTROSPECTION_URI: ${{ secrets.KEYCLOAK_INTROSPECTION_URI }}
+            KEYCLOAK_SERVER_URL: ${{ secrets.KEYCLOAK_SERVER_URL }}
+            KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}
+            CLIENT_ID:  ${{ secrets.CLIENT_ID }}
+            KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+            ADMIN_CLIENT_ID: ${{ secrets.ADMIN_CLIENT_ID }}
+            KEYCLOAK_ADMIN_CLIENT_ID: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_ID }}
+            KEYCLOAK_MASTER_REALM: ${{ secrets.KEYCLOAK_MASTER_REALM }}
+            KEYCLOAK_USERNAME: ${{ secrets.KEYCLOAK_USERNAME }}
+            KEYCLOAK_PASSWORD: ${{ secrets.KEYCLOAK_PASSWORD }}
+            KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+            EUREKA_URL: ${{ secrets.EUREKA_URL }}
+            PROFILE: ${{ secrets.PROFILE }}
+            IDENTITY_SERVICE_APPLICATION_NAME: ${{ secrets.IDENTITY_SERVICE_APPLICATION_NAME }}
+            MASTER_REALM_CLIENT_SECRET: ${{ env.MASTER_REALM_CLIENT_SECRET }}
+            ADMIN_CLIENT_SECRET: ${{ env.ADMIN_CLIENT_SECRET }}
+            PORT: ${{ secrets.PORT }}
 
-      # - name: Maven Verify
-      #   run: mvn -B clean verify
-
-      # - name: Maven Test
-      #   env:
-      #       DATABASE_URL: ${{ env.DATABASE_URL }}
-      #       DATABASE_NAME: ${{ env.DATABASE_NAME }}
-      #       KEYCLOAK_INTROSPECTION_URI: ${{ secrets.KEYCLOAK_INTROSPECTION_URI }}
-      #       KEYCLOAK_SERVER_URL: ${{ secrets.KEYCLOAK_SERVER_URL }}
-      #       KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}
-      #       CLIENT_ID:  ${{ secrets.CLIENT_ID }}
-      #       KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
-      #       ADMIN_CLIENT_ID: ${{ secrets.ADMIN_CLIENT_ID }}
-      #       KEYCLOAK_ADMIN_CLIENT_ID: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_ID }}
-      #       KEYCLOAK_MASTER_REALM: ${{ secrets.KEYCLOAK_MASTER_REALM }}
-      #       KEYCLOAK_USERNAME: ${{ secrets.KEYCLOAK_USERNAME }}
-      #       KEYCLOAK_PASSWORD: ${{ secrets.KEYCLOAK_PASSWORD }}
-      #       KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
-      #       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      #       EUREKA_URL: ${{ secrets.EUREKA_URL }}
-      #       PROFILE: ${{ secrets.PROFILE }}
-      #       IDENTITY_SERVICE_APPLICATION_NAME: ${{ secrets.IDENTITY_SERVICE_APPLICATION_NAME }}
-      #       MASTER_REALM_CLIENT_SECRET: ${{ env.MASTER_REALM_CLIENT_SECRET }}
-      #       ADMIN_CLIENT_SECRET: ${{ env.ADMIN_CLIENT_SECRET }}
-      #       PORT: ${{ secrets.PORT }}
-
-      #       QORE_ID_CLIENT_ID: ${{ secrets.QORE_ID_CLIENT_ID }}
-      #       QORE_ID_CLIENT_SECRET: ${{ secrets.QORE_ID_CLIENT_SECRET }}
-      #       QORE_ID_URL: ${{ secrets.QORE_ID_URL }}
-      #       QORE_ID_TEST_NIN_NUMBER: ${{ secrets.QORE_ID_TEST_NIN_NUMBER }}
-      #       QORE_ID_TEST_BVN_NUMBER: ${{ secrets.QORE_ID_TEST_BVN_NUMBER }}
-      #       QORE_ID_TEST_RC_NUMBER: ${{ secrets.QORE_ID_TEST_RC_NUMBER }}
+            QORE_ID_CLIENT_ID: ${{ secrets.QORE_ID_CLIENT_ID }}
+            QORE_ID_CLIENT_SECRET: ${{ secrets.QORE_ID_CLIENT_SECRET }}
+            QORE_ID_URL: ${{ secrets.QORE_ID_URL }}
+            QORE_ID_TEST_NIN_NUMBER: ${{ secrets.QORE_ID_TEST_NIN_NUMBER }}
+            QORE_ID_TEST_BVN_NUMBER: ${{ secrets.QORE_ID_TEST_BVN_NUMBER }}
+            QORE_ID_TEST_RC_NUMBER: ${{ secrets.QORE_ID_TEST_RC_NUMBER }}
 
 
-      #       PREMBLY_API_KEY: ${{ secrets.PREMBLY_API_KEY }}
-      #       PREMBLY_APP_ID: ${{ secrets.PREMBLY_APP_ID }}
-      #       PREMBLY_URL: ${{ secrets.PREMBLY_URL }}
-      #       PREMBLY_ID_TEST_NIN_NUMBER: ${{ secrets.PREMBLY_ID_TEST_NIN_NUMBER }}
-      #       PREMBLY_ID_TEST_BVN_NUMBER: ${{ secrets.PREMBLY_ID_TEST_BVN_NUMBER }}
-      #       PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
-      #       EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
+            PREMBLY_API_KEY: ${{ secrets.PREMBLY_API_KEY }}
+            PREMBLY_APP_ID: ${{ secrets.PREMBLY_APP_ID }}
+            PREMBLY_URL: ${{ secrets.PREMBLY_URL }}
+            PREMBLY_ID_TEST_NIN_NUMBER: ${{ secrets.PREMBLY_ID_TEST_NIN_NUMBER }}
+            PREMBLY_ID_TEST_BVN_NUMBER: ${{ secrets.PREMBLY_ID_TEST_BVN_NUMBER }}
+            PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
+            EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
             
-      #  run: mvn -B clean verify
+        run: mvn -B clean package
 
      # - name: Maven Generate report
        # run: mvn surefire-report:report
@@ -119,3 +100,19 @@ jobs:
       - name: Update ECS service
         run: |
           aws ecs update-service --cluster ${{ env.CLUSTER }} --service ${{ env.SERVICE }} --force-new-deployment
+
+      - name: Wait for 10 minutes
+        run: sleep 600
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.3'
+
+      - name: Run automation test
+        env:
+          REPO_PAT: ${{ secrets.REPO_PAT }}
+        run: |
+          chmod +x ${{ github.workspace }}/run_pytest.sh
+          ${{ github.workspace }}/run_pytest.sh
+        shell: bash
