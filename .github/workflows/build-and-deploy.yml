@@ -114,6 +114,7 @@ jobs:
       - name: Run automation test
         env:
           REPO_PAT: ${{ secrets.REPO_PAT }}
+          BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           chmod +x ${{ github.workspace }}/run_pytest.sh
           ${{ github.workspace }}/run_pytest.sh
