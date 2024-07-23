@@ -9,6 +9,7 @@ git clone https://${REPO_PAT}@github.com/Tharolloo/Identity-Management_QA.git
 # Navigate to the cloned repository
 ls
 cd Identity-Management_QA
+git checkout dev
 
 # Create and activate a virtual environment
 python3 -m venv venv
