@@ -2,7 +2,7 @@
 
 REPORT_DIR=target/surefire-reports
 LOCAL_URL=http://localhost:8095/report
-HOSTED_URL=https://yourdomain.com/report
+HOSTED_URL=https://api-identity-management-karrabo.enum.africa/report
 
 # Determine the target URL based on the environment
 if [ "$GITHUB_ACTIONS" = "true" ]; then
