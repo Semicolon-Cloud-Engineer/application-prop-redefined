@@ -20,7 +20,7 @@ pip install pytest
 pip install -r requirements.txt
 
 # Run the tests
-pytest --junitxml=pytest-results.xml
+pytest test/ --junitxml=pytest-results.xml
 
 # Deactivate the virtual environment
 deactivate
