@@ -70,7 +70,9 @@ jobs:
             PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
             
-        run: mvn -B clean package
+        run: |
+          mkdir -p logs
+          mvn -B clean package > logs/build.log 2>&1
 
       - name: Set environment variables
         id: vars
@@ -106,6 +108,12 @@ jobs:
             echo "From: builds@semicolon.africa" > /tmp/email.txt
             echo "To: $email" >> /tmp/email.txt
             echo "Subject: Build Status" >> /tmp/email.txt
+            echo "MIME-Version: 1.0" >> /tmp/email.txt
+            echo "Content-Type: multipart/mixed; boundary=frontier" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier" >> /tmp/email.txt
+            echo "Content-Type: text/plain" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
             printf "Congratulations, your recent build in the PR you made at Identity Management Backend was successful.\n" >> /tmp/email.txt
             printf "Branch: ${BRANCH_NAME}\n" >> /tmp/email.txt
             printf "Commit Title: ${COMMIT_TITLE}\n" >> /tmp/email.txt
@@ -113,6 +121,14 @@ jobs:
             printf "Author: ${COMMIT_AUTHOR}\n" >> /tmp/email.txt
             printf "TAG: ${{ env.TAG }}\n\n" >> /tmp/email.txt
             printf "Regards,\nThe Cloud Team" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier" >> /tmp/email.txt
+            echo "Content-Type: text/plain" >> /tmp/email.txt
+            echo "Content-Disposition: attachment; filename=build.log" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            cat logs/build.log >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier--" >> /tmp/email.txt
             curl --ssl-reqd \
               --url "smtps://${SMTP_SERVER}:${SMTP_PORT}" \
               --mail-from "builds@semicolon.africa" \
@@ -121,6 +137,7 @@ jobs:
               --upload-file /tmp/email.txt || echo "Failed to send email to $email"
           done
 
+          
       - name: Send build failure email notification
         if: failure()
         env:
@@ -135,14 +152,28 @@ jobs:
           do
             echo "From: builds@semicolon.africa" > /tmp/email.txt
             echo "To: $email" >> /tmp/email.txt
-            echo "Subject: Build Failure" >> /tmp/email.txt
-            printf "Oooops, Yyour recent build in the PR you made at Identity Management Backend was unsuccessful, kindly check the new commit and fix.\n\n" >> /tmp/email.txt
+            echo "Subject: Build Status" >> /tmp/email.txt
+            echo "MIME-Version: 1.0" >> /tmp/email.txt
+            echo "Content-Type: multipart/mixed; boundary=frontier" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier" >> /tmp/email.txt
+            echo "Content-Type: text/plain" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            printf "Congratulations, your recent build in the PR you made at Identity Management Backend was unsuccessful.\n" >> /tmp/email.txt
             printf "Branch: ${BRANCH_NAME}\n" >> /tmp/email.txt
             printf "Commit Title: ${COMMIT_TITLE}\n" >> /tmp/email.txt
             printf "Commit Message: ${COMMIT_MESSAGE}\n" >> /tmp/email.txt
             printf "Author: ${COMMIT_AUTHOR}\n" >> /tmp/email.txt
             printf "TAG: ${{ env.TAG }}\n\n" >> /tmp/email.txt
             printf "Regards,\nThe Cloud Team" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier" >> /tmp/email.txt
+            echo "Content-Type: text/plain" >> /tmp/email.txt
+            echo "Content-Disposition: attachment; filename=build.log" >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            cat logs/build.log >> /tmp/email.txt
+            echo "" >> /tmp/email.txt
+            echo "--frontier--" >> /tmp/email.txt
             curl --ssl-reqd \
               --url "smtps://${SMTP_SERVER}:${SMTP_PORT}" \
               --mail-from "builds@semicolon.africa" \
