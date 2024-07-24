@@ -71,8 +71,7 @@ jobs:
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
             
         run: |
-          mkdir -p logs
-          mvn -B clean package > logs/build.log 2>&1
+          mvn -B clean package 
 
       - name: Set environment variables
         id: vars
@@ -131,7 +130,7 @@ jobs:
               --mail-from "builds@semicolon.africa" \
               --mail-rcpt "$email" \
               --user "${SMTP_USERNAME}:${SMTP_PASSWORD}" \
-              --upload-file /tmp/email.txt || echo "Failed to send email to $email"
+              /tmp/email.txt || echo "Failed to send email to $email"
           done
 
           
@@ -173,5 +172,5 @@ jobs:
               --mail-from "builds@semicolon.africa" \
               --mail-rcpt "$email" \
               --user "${SMTP_USERNAME}:${SMTP_PASSWORD}" \
-              --upload-file /tmp/email.txt || echo "Failed to send email to $email"
+             /tmp/email.txt || echo "Failed to send email to $email"
           done
