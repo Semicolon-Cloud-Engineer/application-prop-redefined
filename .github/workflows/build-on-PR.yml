@@ -124,9 +124,6 @@ jobs:
             echo "" >> /tmp/email.txt
             echo "--frontier" >> /tmp/email.txt
             echo "Content-Type: text/plain" >> /tmp/email.txt
-            echo "Content-Disposition: attachment; filename=build.log" >> /tmp/email.txt
-            echo "" >> /tmp/email.txt
-            cat logs/build.log >> /tmp/email.txt
             echo "" >> /tmp/email.txt
             echo "--frontier--" >> /tmp/email.txt
             curl --ssl-reqd \
@@ -169,9 +166,6 @@ jobs:
             echo "" >> /tmp/email.txt
             echo "--frontier" >> /tmp/email.txt
             echo "Content-Type: text/plain" >> /tmp/email.txt
-            echo "Content-Disposition: attachment; filename=build.log" >> /tmp/email.txt
-            echo "" >> /tmp/email.txt
-            cat logs/build.log >> /tmp/email.txt
             echo "" >> /tmp/email.txt
             echo "--frontier--" >> /tmp/email.txt
             curl --ssl-reqd \
