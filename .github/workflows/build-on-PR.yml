@@ -6,6 +6,10 @@ on:
       - dev
 
 env:
+  DATABASE_URL: mongodb+srv://enumv2-db:PiD96zMcGQ51uglf@enumv2cluster.wzg2rjz.mongodb.net/
+  DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+  MASTER_REALM_CLIENT_SECRET: ${{ secrets.MASTER_REALM_CLIENT_SECRET }}
+  ADMIN_CLIENT_SECRET: ${{ secrets.ADMIN_CLIENT_SECRET }}
   EMAILS: 'martins@semicolon.africa,damian@semicolon.africa,'
 
 jobs:
