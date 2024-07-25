@@ -18,9 +18,11 @@ source venv/bin/activate
 # Install pytest and other requirements
 pip install pytest
 pip install -r requirements.txt
+pip install pytest-html
 
 # Run the tests
-pytest test/ --junitxml=pytest-results.xml
+pytest test/ --html=report-pytest-results.html --self-contained-html   
+aws s3 cp report-pytest-results.html s3://semicolon-build-reports/karrabo/identity-management/automation-tests-result/report-pytest-results.html
 
 # Deactivate the virtual environment
 deactivate
