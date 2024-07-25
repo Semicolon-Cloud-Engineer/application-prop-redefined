@@ -20,9 +20,9 @@ do
   printf "Author: ${COMMIT_AUTHOR}\n" >> /tmp/email.txt
  printf "\nTAG: ${TAG}\n\n" >> /tmp/email.txt
   printf "click on the links below to view your reports\n" >> /tmp/email.txt
-  printf "Maven Build Report: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html\n" >> /tmp/email.txt
-  printf "Automation Test Report: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html\n" >> /tmp/email.txt
-  printf "Sonarqube Report: http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management\n" >> /tmp/email.txt
+  printf "\n\nMaven Build Report: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html\n" >> /tmp/email.txt
+  printf "\n\nAutomation Test Report: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html\n" >> /tmp/email.txt
+  printf "\n\nSonarqube Report: http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management\n\n" >> /tmp/email.txt
   
   printf "Regards,\nThe Cloud Team" >> /tmp/email.txt
   curl --ssl-reqd \
