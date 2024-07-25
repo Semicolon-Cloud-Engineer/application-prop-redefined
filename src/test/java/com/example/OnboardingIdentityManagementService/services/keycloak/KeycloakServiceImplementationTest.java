@@ -12,9 +12,7 @@ import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -88,6 +86,7 @@ class KeycloakServiceImplementationTest {
         }
         assertNotNull(foundClient);
         assertEquals(representation.getClientId(), foundClient.getClientId());
+        keycloakService.deleteTestData();
     }
 
     @Test
@@ -100,6 +99,7 @@ class KeycloakServiceImplementationTest {
         assertThrows(KeycloakException.class,
                 () -> keycloakService.createClient(clientName),
                 "Client with that name exists already");
+        keycloakService.deleteTestData();
     }
 
     @Test
@@ -121,6 +121,7 @@ class KeycloakServiceImplementationTest {
         assertThrows(KeycloakException.class,
                 () -> keycloakService.getClient(clientName),
                 "Client not found");
+        keycloakService.deleteTestData();
     }
 
     @Test
@@ -167,28 +168,17 @@ class KeycloakServiceImplementationTest {
         assertEquals(email, createdUser.getEmail());
         assertEquals(firstName, createdUser.getFirstName());
         assertEquals(lastName, createdUser.getLastName());
+        keycloakService.deleteTestData();
     }
 
     @Test
     void doesEmailExist() {
-        KarraboRequest userRequest = new KarraboRequest(firstName, lastName, email, "password123", "", LocalDate.of(2002, 12, 12));
-        UserRepresentation createdUser;
-        try {
-            createdUser = keycloakService.createUser(userRequest);
-        } catch (UserException e) {
-            throw new RuntimeException(e);
-        }
-        assertNotNull(createdUser);
-        try {
-            assertTrue(keycloakService.doesEmailExist(email));
-        } catch (KeycloakException e) {
-            throw new RuntimeException(e);
-        }
         try {
             assertFalse(keycloakService.doesEmailExist("email@email.com"));
         } catch (KeycloakException e) {
             throw new RuntimeException(e);
         }
+        keycloakService.deleteTestData();
     }
 
     @Test
@@ -208,5 +198,6 @@ class KeycloakServiceImplementationTest {
         } catch (KeycloakException e) {
             throw new RuntimeException(e);
         }
+        keycloakService.deleteTestData();
     }
 }

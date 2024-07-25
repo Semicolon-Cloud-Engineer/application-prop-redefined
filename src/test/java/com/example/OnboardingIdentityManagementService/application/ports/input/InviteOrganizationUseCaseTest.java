@@ -2,6 +2,7 @@ package com.example.OnboardingIdentityManagementService.application.ports.input;
 
 import com.example.OnboardingIdentityManagementService.domain.exception.KeycloakException;
 import com.example.OnboardingIdentityManagementService.domain.exception.OrganizationException;
+import com.example.OnboardingIdentityManagementService.domain.exception.UserException;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.InviteOrganizationRequest;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.OrganizationType;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.response.organization.InviteOrganizationResponse;
@@ -9,11 +10,16 @@ import com.example.OnboardingIdentityManagementService.domain.services.keycloak.
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Slf4j
@@ -22,7 +28,7 @@ class InviteOrganizationUseCaseTest {
     @Autowired
     private InviteOrganizationUseCase inviteOrganizationUseCase;
 
-    @Autowired
+    @MockBean
     private KeycloakService keycloakService;
 
     private String firstName;
@@ -43,14 +49,24 @@ class InviteOrganizationUseCaseTest {
     }
 
     @Test
-    void inviteOrganization() {
-        try {
-            if (keycloakService.doesClientExist(QORE_ID_TEST_COMPANY_NAME)) {
-                keycloakService.deleteClient(QORE_ID_TEST_COMPANY_NAME);
-            }
-        } catch (KeycloakException e) {
-            log.error("Error ", e);
-        }
+    void inviteOrganization() throws KeycloakException, UserException {
+        String QORE_ID_TEST_COMPANY_NAME = "TEST COMPANY";
+        ClientRepresentation clientRepresentation = new ClientRepresentation();
+        clientRepresentation
+                .setClientId(QORE_ID_TEST_COMPANY_NAME);
+        clientRepresentation.setId(QORE_ID_TEST_COMPANY_NAME);
+        clientRepresentation.setName(QORE_ID_TEST_COMPANY_NAME);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstName);
+        userRepresentation.setLastName(lastName);
+        userRepresentation.setId("id-12345");
+
+        when(keycloakService.getClient(any())).thenReturn(clientRepresentation);
+        when(keycloakService.createClient(any())).thenReturn(clientRepresentation);
+        when(keycloakService.doesClientExist(any())).thenReturn(true);
+        when(keycloakService.createUser(any())).thenReturn(userRepresentation);
         InviteOrganizationRequest request =
                 new InviteOrganizationRequest(companyNumber,
                         firstName, lastName, email, OrganizationType.MERCHANT_ACQUIRER);
@@ -64,6 +80,11 @@ class InviteOrganizationUseCaseTest {
         assertEquals(companyNumber, "RC" + response.getCompanyNumber());
         assertEquals(firstName, response.getEmployeeData().getFirstName());
         assertEquals(lastName, response.getEmployeeData().getLastName());
+        try {
+            keycloakService.deleteClient(QORE_ID_TEST_COMPANY_NAME);
+        } catch (KeycloakException e) {
+            log.error("Error ", e);
+        }
     }
 
     @Test
