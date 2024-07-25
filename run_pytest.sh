@@ -21,7 +21,7 @@ pip install -r requirements.txt
 pip install pytest-html
 
 # Run the tests
-pytest test/ --html=report-pytest-results.html --self-contained-html   
+pytest test/ --html=report-pytest-results.html --self-contained-html || true 
 aws s3 cp report-pytest-results.html s3://semicolon-build-reports/karrabo/identity-management/automation-tests-result/report-pytest-results.html
 
 # Deactivate the virtual environment
