@@ -12,7 +12,7 @@ chmod +x ./run_pytest.sh
 
 # Login to Amazon ECR
 echo "Logging in to Amazon ECR..."
-aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REPO_URL}
+aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 357586184453.dkr.ecr.eu-west-1.amazonaws.com
 
 # Build, tag, and push systest image to Amazon ECR
 echo "Building and pushing systest Docker image..."
