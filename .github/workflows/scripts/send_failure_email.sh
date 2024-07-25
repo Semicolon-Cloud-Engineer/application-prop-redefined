@@ -24,7 +24,7 @@ do
   printf "\n\nAutomation Test Report: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html\n" >> /tmp/email.txt
   printf "\n\nSonarqube Report: http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management\n\n" >> /tmp/email.txt
   
-  printf "Regards,\nThe Cloud Team" >> /tmp/email.txt
+  printf "\n\nRegards,\nThe Cloud Team" >> /tmp/email.txt
   curl --ssl-reqd \
     --url "smtps://${SMTP_SERVER}:${SMTP_PORT}" \
     --mail-from "builds@semicolon.africa" \
