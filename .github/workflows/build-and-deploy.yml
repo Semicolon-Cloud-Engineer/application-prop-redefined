@@ -89,11 +89,8 @@ jobs:
         if: always()
         env:
           S3_BUCKET: semicolon-build-reports
-          PROJECT_NAME: karrabo
+          PROJECT_NAME: karrabo/identity-management/maven-reports
         run: |
-          # Move current "new" report to "old" folder
-          #aws s3 sync s3://${S3_BUCKET}/${PROJECT_NAME}/new-reports s3://${S3_BUCKET}/${PROJECT_NAME}/old-reports --delete
-          #aws s3 rm s3://${S3_BUCKET}/${PROJECT_NAME}/new-reports --recursive
           # Upload new Site reports
           aws s3 sync target/site s3://${S3_BUCKET}/${PROJECT_NAME}/new-reports
 
