@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+REPO_PAT=$1
+
 # Set up Python
 echo "Setting up Python 3.12.3..."
 # Add commands to set up Python if necessary
@@ -8,7 +10,7 @@ echo "Setting up Python 3.12.3..."
 # Run automation test
 echo "Running automation tests..."
 chmod +x ./run_pytest.sh
-./run_pytest.sh
+./run_pytest.sh "$REPO_PAT"
 
 # Login to Amazon ECR
 echo "Logging in to Amazon ECR..."
