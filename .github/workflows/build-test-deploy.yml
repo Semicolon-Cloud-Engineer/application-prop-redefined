@@ -3,7 +3,7 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      - email-notification
+      - dev
 
 env:
   EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,ibrahim@semicolon.africa'
