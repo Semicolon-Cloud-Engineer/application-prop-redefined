@@ -7,6 +7,15 @@ import com.example.OnboardingIdentityManagementService.infrastructure.adapters.i
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.OrganizationType;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.response.organization.InviteOrganizationResponse;
 import com.example.OnboardingIdentityManagementService.domain.services.keycloak.KeycloakService;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboBusinessParty;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboOrganization;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboPlatformUser;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.OrganizationEmployee;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.enums.BusinessPartyType;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.BusinessPartyRepository;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.EmployeeRepository;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.OrganizationRepository;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +40,18 @@ class InviteOrganizationUseCaseTest {
     @MockBean
     private KeycloakService keycloakService;
 
+    @MockBean
+    private BusinessPartyRepository businessPartyRepository;
+
+    @MockBean
+    private OrganizationRepository organizationRepository;
+
+    @MockBean
+    private EmployeeRepository employeeRepository;
+
+    @MockBean
+    private UserRepository userRepository;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -38,20 +59,15 @@ class InviteOrganizationUseCaseTest {
     @Value("${qoreId.rc-number}")
     private String companyNumber;
 
-    private final String QORE_ID_TEST_COMPANY_NAME = "TEST COMPANY";
-
     @BeforeEach
     void createDifferentNames() {
         keycloakService.deleteTestData();
         firstName = "testName " + System.currentTimeMillis();
         lastName = "testName " + System.currentTimeMillis();
         email = "test-mail" + System.currentTimeMillis() + "@gmail.com";
-    }
 
-    @Test
-    void inviteOrganization() throws KeycloakException, UserException {
-        String QORE_ID_TEST_COMPANY_NAME = "TEST COMPANY";
         ClientRepresentation clientRepresentation = new ClientRepresentation();
+        String QORE_ID_TEST_COMPANY_NAME = "TEST COMPANY";
         clientRepresentation
                 .setClientId(QORE_ID_TEST_COMPANY_NAME);
         clientRepresentation.setId(QORE_ID_TEST_COMPANY_NAME);
@@ -63,10 +79,44 @@ class InviteOrganizationUseCaseTest {
         userRepresentation.setLastName(lastName);
         userRepresentation.setId("id-12345");
 
-        when(keycloakService.getClient(any())).thenReturn(clientRepresentation);
-        when(keycloakService.createClient(any())).thenReturn(clientRepresentation);
-        when(keycloakService.doesClientExist(any())).thenReturn(true);
-        when(keycloakService.createUser(any())).thenReturn(userRepresentation);
+        KarraboBusinessParty businessPartyUser = new
+                KarraboBusinessParty("id123", firstName + " " + lastName,
+                BusinessPartyType.USER);
+
+        KarraboBusinessParty businessPartyOrganization = new
+                KarraboBusinessParty("id123", QORE_ID_TEST_COMPANY_NAME,
+                BusinessPartyType.ORGANISATION);
+
+
+        KarraboPlatformUser platformUser = new KarraboPlatformUser();
+        platformUser.setFirstName(firstName);
+        platformUser.setLastName(lastName);
+        platformUser.setEmail(email);
+        platformUser.setUserId("userId");
+        platformUser.setBusinessParty(businessPartyUser);
+        KarraboOrganization organization = new KarraboOrganization();
+        organization.setOrganizationId("organizationId");
+        organization.setBusinessParty(businessPartyOrganization);
+        organization.setCompanyNumber("100001");
+        OrganizationEmployee employee = new OrganizationEmployee("id12345", organization, platformUser);
+
+        when(businessPartyRepository.save(any())).thenReturn(businessPartyUser);
+        when(userRepository.save(any())).thenReturn(platformUser);
+        when(employeeRepository.save(any())).thenReturn(employee);
+        when(organizationRepository.save(any())).thenReturn(organization);
+
+        try {
+            when(keycloakService.getClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.createClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.doesClientExist(any())).thenReturn(true);
+            when(keycloakService.createUser(any())).thenReturn(userRepresentation);
+        } catch (KeycloakException | UserException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void inviteOrganization() {
         InviteOrganizationRequest request =
                 new InviteOrganizationRequest(companyNumber,
                         firstName, lastName, email, OrganizationType.MERCHANT_ACQUIRER);
@@ -80,11 +130,6 @@ class InviteOrganizationUseCaseTest {
         assertEquals(companyNumber, "RC" + response.getCompanyNumber());
         assertEquals(firstName, response.getEmployeeData().getFirstName());
         assertEquals(lastName, response.getEmployeeData().getLastName());
-        try {
-            keycloakService.deleteClient(QORE_ID_TEST_COMPANY_NAME);
-        } catch (KeycloakException e) {
-            log.error("Error ", e);
-        }
     }
 
     @Test

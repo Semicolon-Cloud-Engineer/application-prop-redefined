@@ -37,7 +37,8 @@ class KeycloakServiceImplementationTest {
         clientName = "testClient " + System.currentTimeMillis();
         firstName = "testUser " + System.currentTimeMillis();
         lastName = "testUserLastName " + System.currentTimeMillis();
-        email = String.format("%s@gmail.com", "testUser" + System.currentTimeMillis()).toLowerCase();
+        email = "testUser" + System.currentTimeMillis() + "@gmail.com";
+        email = email.toLowerCase();
     }
 
     @Test

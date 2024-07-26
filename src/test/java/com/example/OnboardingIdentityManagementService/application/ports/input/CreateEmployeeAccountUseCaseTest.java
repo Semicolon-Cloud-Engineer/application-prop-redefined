@@ -8,10 +8,14 @@ import com.example.OnboardingIdentityManagementService.infrastructure.adapters.i
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.response.users.CreateEmployeeAccountResponse;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboBusinessParty;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboPlatformUser;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.enums.BusinessPartyType;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.BusinessPartyRepository;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.UserRepository;
 import com.example.OnboardingIdentityManagementService.domain.services.keycloak.KeycloakService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,11 +31,14 @@ class CreateEmployeeAccountUseCaseTest {
     @Autowired
     private CreateEmployeeAccountUseCase createEmployeeAccountUseCase;
 
-    @Autowired
+    @MockBean
     private KeycloakService keycloakService;
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private BusinessPartyRepository businessPartyRepository;
 
     private String clientName;
 
@@ -48,22 +55,44 @@ class CreateEmployeeAccountUseCaseTest {
         firstName = "testUser " + System.currentTimeMillis();
         lastName = "testUserLastName " + System.currentTimeMillis();
         email = String.format("%s@gmail.com", "testUser" + System.currentTimeMillis()).toLowerCase();
+        ClientRepresentation clientRepresentation = new ClientRepresentation();
+        clientRepresentation
+                .setClientId(clientName);
+        clientRepresentation.setId(clientName);
+        clientRepresentation.setName(clientName);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstName);
+        userRepresentation.setLastName(lastName);
+        userRepresentation.setId("id-12345");
+        when(businessPartyRepository.save(any()))
+                .thenReturn(new KarraboBusinessParty(
+                        "id123", firstName + " " + lastName,
+                        BusinessPartyType.USER));
+
+        try {
+            when(keycloakService.getClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.createClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.createUser(any())).thenReturn(userRepresentation);
+        } catch (KeycloakException | UserException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     void createAccountForEmployee() {
+        try {
+            when(keycloakService.doesClientExist(clientName)).thenReturn(true);
+        } catch (KeycloakException e) {
+            throw new RuntimeException(e);
+        }
         when(userRepository.save(any())).thenReturn(new KarraboPlatformUser("falseId",new KarraboBusinessParty(), firstName, lastName, email));
         InviteEmployeeRequest inviteEmployeeRequest = new InviteEmployeeRequest();
         inviteEmployeeRequest.setFirstName(firstName);
         inviteEmployeeRequest.setLastName(lastName);
         inviteEmployeeRequest.setEmail(email);
         inviteEmployeeRequest.setNameOfClientCreatedForCompany(clientName);
-
-        try {
-            keycloakService.createClient(clientName);
-        } catch (KeycloakException e) {
-            throw new RuntimeException(e);
-        }
 
         CreateEmployeeAccountResponse response;
         try {
@@ -79,29 +108,17 @@ class CreateEmployeeAccountUseCaseTest {
 
     @Test
     void createAccountForEmployeeWithEmailThatAlreadyExists() {
+        try {
+            when(keycloakService.doesEmailExist(email)).thenReturn(true);
+        } catch (KeycloakException e) {
+            throw new RuntimeException(e);
+        }
         when(userRepository.save(any())).thenReturn(new KarraboPlatformUser("falseId",new KarraboBusinessParty(), firstName, lastName, email));
         InviteEmployeeRequest inviteEmployeeRequest = new InviteEmployeeRequest();
         inviteEmployeeRequest.setFirstName(firstName);
         inviteEmployeeRequest.setLastName(lastName);
         inviteEmployeeRequest.setEmail(email);
         inviteEmployeeRequest.setNameOfClientCreatedForCompany(clientName);
-
-        try {
-            keycloakService.createClient(clientName);
-        } catch (KeycloakException e) {
-            throw new RuntimeException(e);
-        }
-
-        CreateEmployeeAccountResponse response;
-        try {
-            response = createEmployeeAccountUseCase.createAccountForEmployee(inviteEmployeeRequest);
-        } catch (UserException e) {
-            throw new RuntimeException(e);
-        }
-        assertNotNull(response);
-        assertEquals(firstName, response.getFirstName());
-        assertEquals(lastName, response.getLastName());
-        assertEquals(email, response.getEmail());
 
         assertThrows(UserException.class, () -> createEmployeeAccountUseCase.createAccountForEmployee(inviteEmployeeRequest));
     }

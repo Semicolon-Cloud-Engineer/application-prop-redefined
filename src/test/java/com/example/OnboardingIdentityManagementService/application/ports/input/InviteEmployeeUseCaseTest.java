@@ -2,6 +2,7 @@ package com.example.OnboardingIdentityManagementService.application.ports.input;
 
 import com.example.OnboardingIdentityManagementService.domain.exception.EmployeeException;
 import com.example.OnboardingIdentityManagementService.domain.exception.KeycloakException;
+import com.example.OnboardingIdentityManagementService.domain.exception.UserException;
 import com.example.OnboardingIdentityManagementService.domain.model.organization.EmployeeDomainObject;
 import com.example.OnboardingIdentityManagementService.domain.services.organization.EmployeeService;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.input.rest.data.request.organization.InviteEmployeeRequest;
@@ -10,12 +11,16 @@ import com.example.OnboardingIdentityManagementService.infrastructure.adapters.o
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboOrganization;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.KarraboPlatformUser;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.OrganizationEmployee;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.entity.enums.BusinessPartyType;
+import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.BusinessPartyRepository;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.EmployeeRepository;
 import com.example.OnboardingIdentityManagementService.infrastructure.adapters.output.persistence.repository.UserRepository;
 import com.example.OnboardingIdentityManagementService.domain.services.keycloak.KeycloakService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +36,7 @@ class InviteEmployeeUseCaseTest {
     @Autowired
     private InviteEmployeeUseCase inviteEmployeeUseCase;
 
-    @Autowired
+    @MockBean
     private KeycloakService keycloakService;
 
     @MockBean
@@ -39,6 +44,9 @@ class InviteEmployeeUseCaseTest {
 
     @MockBean
     private EmployeeRepository employeeRepository;
+
+    @MockBean
+    private BusinessPartyRepository businessPartyRepository;
 
     private String firstName;
     private String lastName;
@@ -51,6 +59,30 @@ class InviteEmployeeUseCaseTest {
         lastName = "testName " + System.currentTimeMillis();
         email = "test-mail" + System.currentTimeMillis() + "@gmail.com";
         clientName = "test-client" + System.currentTimeMillis();
+
+        ClientRepresentation clientRepresentation = new ClientRepresentation();
+        clientRepresentation
+                .setClientId(clientName);
+        clientRepresentation.setId(clientName);
+        clientRepresentation.setName(clientName);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstName);
+        userRepresentation.setLastName(lastName);
+        userRepresentation.setId("id-12345");
+        when(businessPartyRepository.save(any()))
+                .thenReturn(new KarraboBusinessParty(
+                        "id123", firstName + " " + lastName,
+                        BusinessPartyType.USER));
+
+        try {
+            when(keycloakService.getClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.createClient(any())).thenReturn(clientRepresentation);
+            when(keycloakService.createUser(any())).thenReturn(userRepresentation);
+        } catch (KeycloakException | UserException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -81,13 +113,13 @@ class InviteEmployeeUseCaseTest {
         inviteEmployeeRequest.setNameOfClientCreatedForCompany(clientName);
         KarraboOrganization organization = new KarraboOrganization();
         inviteEmployeeRequest.setOrganization(organization);
-        try {
-            keycloakService.createClient(clientName);
-        } catch (KeycloakException e) {
-            log.error("Error: ", e);
-        }
 
         InviteEmployeeResponse response = null;
+        try {
+            when(keycloakService.doesClientExist(clientName)).thenReturn(true);
+        } catch (KeycloakException e) {
+            throw new RuntimeException(e);
+        }
         try {
             response = inviteEmployeeUseCase.inviteEmployee(inviteEmployeeRequest);
         } catch (EmployeeException e) {
