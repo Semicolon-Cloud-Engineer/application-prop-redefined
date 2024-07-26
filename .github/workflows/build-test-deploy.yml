@@ -188,7 +188,7 @@ jobs:
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
-          chmod +x .github/workflows/scripts/send_success_email.sh .github/workflows/scripts/send_failure_email.sh
+         chmod +x .github/workflows/scripts/send_success_email.sh
           .github/workflows/scripts/send_success_email.sh \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
@@ -209,6 +209,7 @@ jobs:
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
+          chmod +x .github/workflows/scripts/send_failure_email.sh
           .github/workflows/scripts/send_failure_email.sh \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
