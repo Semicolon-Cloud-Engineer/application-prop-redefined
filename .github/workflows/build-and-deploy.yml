@@ -3,7 +3,7 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      - dev
+      - test
 
 env:
   REPO_URL: 357586184453.dkr.ecr.eu-west-1.amazonaws.com/identity-management-dev-backend
