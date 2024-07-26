@@ -153,10 +153,8 @@ jobs:
       - name: Run tests script
         run: |
           chmod +x .github/workflows/scripts/run_tests.sh
-          .github/workflows/scripts/run_tests.sh \
-            "$REPO_PAT"
+          .github/workflows/scripts/run_tests.sh "${{ secrets.REPO_PAT }}"
         env:
-          REPO_PAT: ${{ secrets.REPO_PAT }}
           BASE_URL: ${{ secrets.BASE_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
