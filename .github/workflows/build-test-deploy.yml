@@ -52,7 +52,9 @@ jobs:
       - name: Get SonarQube URL
         id: get_sonarqube_url
         if: always()
-        run: echo "sonarqube_url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management" >> $GITHUB_ENV
+        run: |
+          echo "sonarqube_url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management" >> $GITHUB_ENV
+          echo "SonarQube URL set to ${{ env.sonarqube_url }}"
 
   deploy:
     name: Deploy to Dev
@@ -86,7 +88,9 @@ jobs:
       - name: Get Maven Report URL
         id: get_maven_report_url
         if: always()
-        run: echo "maven_report_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html" >> $GITHUB_ENV
+        run: |
+          echo "maven_report_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html" >> $GITHUB_ENV
+          echo "Maven Report URL set to ${{ env.maven_report_url }}"
 
   run_tests:
     name: Run Automation Tests
@@ -109,7 +113,9 @@ jobs:
       - name: Get Automation Test URL
         id: get_automation_test_url
         if: always()
-        run: echo "automation_test_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html" >> $GITHUB_ENV
+        run: |
+          echo "automation_test_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html" >> $GITHUB_ENV
+          echo "Automation Test URL set to ${{ env.automation_test_url }}"
 
   send_notification:
     name: Send Email Notification
@@ -123,6 +129,9 @@ jobs:
           echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')" >> $GITHUB_ENV
+          echo "TAG=${{ env.TAG }}"
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+          echo "COMMIT_AUTHOR=${{ env.COMMIT_AUTHOR }}"
 
       - name: Send build success email notification
         if: success()
@@ -135,6 +144,10 @@ jobs:
           MAVEN_REPORT_URL: ${{ env.maven_report_url }}
           AUTOMATION_TEST_URL: ${{ env.automation_test_url }}
         run: |
+          echo "Sending success email with the following details:"
+          echo "SonarQube URL: $SONARQUBE_URL"
+          echo "Maven Report URL: $MAVEN_REPORT_URL"
+          echo "Automation Test URL: $AUTOMATION_TEST_URL"
           chmod +x .github/workflows/scripts/send_success_email.sh
           .github/workflows/scripts/send_success_email.sh \
             "$SONARQUBE_URL" \
@@ -160,6 +173,10 @@ jobs:
           MAVEN_REPORT_URL: ${{ env.maven_report_url }}
           AUTOMATION_TEST_URL: ${{ env.automation_test_url }}
         run: |
+          echo "Sending failure email with the following details:"
+          echo "SonarQube URL: $SONARQUBE_URL"
+          echo "Maven Report URL: $MAVEN_REPORT_URL"
+          echo "Automation Test URL: $AUTOMATION_TEST_URL"
           chmod +x .github/workflows/scripts/send_failure_email.sh
           .github/workflows/scripts/send_failure_email.sh \
             "$SONARQUBE_URL" \
