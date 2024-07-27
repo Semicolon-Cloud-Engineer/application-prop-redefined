@@ -18,6 +18,9 @@ env:
   DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
   MASTER_REALM_CLIENT_SECRET: ${{ secrets.MASTER_REALM_CLIENT_SECRET }}
   ADMIN_CLIENT_SECRET: ${{ secrets.ADMIN_CLIENT_SECRET }}
+  SONARQUBE_URL_SET: false
+  MAVEN_REPORT_URL_SET: false
+  AUTOMATION_TEST_URL_SET: false
 
 jobs:
 
@@ -26,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sonarqube_url: ${{ steps.get_sonarqube_url.outputs.sonarqube_url }}
+      sonarqube_url_set: ${{ steps.get_sonarqube_url.outputs.sonarqube_url_set }}
 
     steps:
       - uses: actions/checkout@v3
@@ -54,7 +58,7 @@ jobs:
         if: always()
         run: |
           echo "sonarqube_url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management" >> $GITHUB_ENV
-          echo "SonarQube URL set to ${{ env.sonarqube_url }}"
+          echo "sonarqube_url_set=true" >> $GITHUB_ENV
 
   deploy:
     name: Deploy to Dev
@@ -62,6 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       maven_report_url: ${{ steps.get_maven_report_url.outputs.maven_report_url }}
+      maven_report_url_set: ${{ steps.get_maven_report_url.outputs.maven_report_url_set }}
 
     steps:
       - uses: actions/checkout@v3
@@ -90,7 +95,7 @@ jobs:
         if: always()
         run: |
           echo "maven_report_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html" >> $GITHUB_ENV
-          echo "Maven Report URL set to ${{ env.maven_report_url }}"
+          echo "maven_report_url_set=true" >> $GITHUB_ENV
 
   run_tests:
     name: Run Automation Tests
@@ -98,6 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       automation_test_url: ${{ steps.get_automation_test_url.outputs.automation_test_url }}
+      automation_test_url_set: ${{ steps.get_automation_test_url.outputs.automation_test_url_set }}
 
     steps:
       - uses: actions/checkout@v3
@@ -115,7 +121,7 @@ jobs:
         if: always()
         run: |
           echo "automation_test_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html" >> $GITHUB_ENV
-          echo "Automation Test URL set to ${{ env.automation_test_url }}"
+          echo "automation_test_url_set=true" >> $GITHUB_ENV
 
   send_notification:
     name: Send Email Notification
@@ -129,9 +135,6 @@ jobs:
           echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')" >> $GITHUB_ENV
-          echo "TAG=${{ env.TAG }}"
-          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
-          echo "COMMIT_AUTHOR=${{ env.COMMIT_AUTHOR }}"
 
       - name: Send build success email notification
         if: success()
@@ -174,6 +177,7 @@ jobs:
           AUTOMATION_TEST_URL: ${{ env.automation_test_url }}
         run: |
           echo "Sending failure email with the following details:"
+          echo "sonarqube boolean value: $sonarqube_url_set"
           echo "SonarQube URL: $SONARQUBE_URL"
           echo "Maven Report URL: $MAVEN_REPORT_URL"
           echo "Automation Test URL: $AUTOMATION_TEST_URL"
