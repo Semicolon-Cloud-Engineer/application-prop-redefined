@@ -175,7 +175,7 @@ jobs:
           
       - name: Get Job URL
         id: job_url
-        run: echo "::set-output name=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
+        run: echo "::set-output name=url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
   
 
   send_notification:
