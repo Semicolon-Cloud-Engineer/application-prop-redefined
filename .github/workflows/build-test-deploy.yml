@@ -55,7 +55,7 @@ jobs:
 
       - name: Get SonarQube URL
         id: get_sonarqube_url
-        if: success()
+        if: always()
         run: |
           echo "sonarqube_url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management" >> $GITHUB_OUTPUT
           echo "sonarqube_url_set=true" >> $GITHUB_OUTPUT
