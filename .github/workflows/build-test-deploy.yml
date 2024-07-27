@@ -3,7 +3,7 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      - dev
+      - workflow
 
 env:
   EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,ibrahim@semicolon.africa'
@@ -19,7 +19,10 @@ env:
   DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
   MASTER_REALM_CLIENT_SECRET: ${{ secrets.MASTER_REALM_CLIENT_SECRET }}
   ADMIN_CLIENT_SECRET: ${{ secrets.ADMIN_CLIENT_SECRET }}
-  # Add all other environment variables here
+  SONARQUBE_URL:   http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
+  AUTOMATION_TEST_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
+  MAVEN_REPORT_URL:  https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
+
 
 jobs:
 
@@ -188,7 +191,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
          chmod +x .github/workflows/scripts/send_success_email.sh
-          .github/workflows/scripts/send_success_email.sh \
+          .github/workflows/scripts/send_success_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
@@ -209,7 +212,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
           chmod +x .github/workflows/scripts/send_failure_email.sh
-          .github/workflows/scripts/send_failure_email.sh \
+          .github/workflows/scripts/send_failure_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
