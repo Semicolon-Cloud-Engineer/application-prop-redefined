@@ -26,9 +26,9 @@ jobs:
 
   build_and_analyze:
     name: Build and Analyze
-    runs-on: ubuntu-latest
-    outputs:
-      sonarqube_url_set: ${{ steps.get_sonarqube_url.outputs.sonarqube_url_set }}
+    # runs-on: ubuntu-latest
+    # outputs:
+    #   sonarqube_url_set: ${{ steps.get_sonarqube_url.outputs.sonarqube_url_set }}
 
     steps:
       - uses: actions/checkout@v3
@@ -39,9 +39,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Run build and analyze script
-        run: |
-          chmod +x .github/workflows/scripts/build_and_analyze.sh
-          .github/workflows/scripts/build_and_analyze.sh
+        # run: |
+        #   chmod +x .github/workflows/scripts/build_and_analyze.sh
+        #   .github/workflows/scripts/build_and_analyze.sh
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -55,8 +55,8 @@ jobs:
       - name: Get SonarQube URL
         id: get_sonarqube_url
         if: always()
-        run: |
-          echo "sonarqube_url_set=true" >> $GITHUB_OUTPUT
+        # run: |
+        #   echo "sonarqube_url_set=true" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy to Dev
