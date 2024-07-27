@@ -1,5 +1,4 @@
 #!/bin/bash
-
 SMTP_SERVER=$1
 SMTP_PORT=$2
 SMTP_USERNAME=$3
@@ -11,6 +10,9 @@ COMMIT_AUTHOR=${8}
 SONARQUBE_URL=${9}
 AUTOMATION_TEST_URL=${10}
 MAVEN_REPORT_URL=${11}
+SONARQUBE_URL_SET=${12}
+MAVEN_REPORT_URL_SET=${13}
+AUTOMATION_TEST_URL_SET=${14}
 
 IFS=',' read -r -a email_array <<< "${EMAILS}"
 for email in "${email_array[@]}"
@@ -24,13 +26,13 @@ do
   printf "\nTAG: ${TAG}\n\n" >> /tmp/email.txt
   printf "Click on the links below to view your reports\n" >> /tmp/email.txt
   
-  if [ -n "$SONARQUBE_URL" ]; then
+  if [ "$SONARQUBE_URL_SET" = "true" ]; then
     printf "\nBuild and Analyze Job: $SONARQUBE_URL\n" >> /tmp/email.txt
   fi
-  if [ -n "$MAVEN_REPORT_URL" ]; then
+  if [ "$MAVEN_REPORT_URL_SET" = "true" ]; then
     printf "\nDeploy and Run Job: $MAVEN_REPORT_URL\n" >> /tmp/email.txt
   fi
-  if [ -n "$AUTOMATION_TEST_URL" ]; then
+  if [ "$AUTOMATION_TEST_URL_SET" = "true" ]; then
     printf "\nAutomation Test Job: $AUTOMATION_TEST_URL\n" >> /tmp/email.txt
   fi
   
