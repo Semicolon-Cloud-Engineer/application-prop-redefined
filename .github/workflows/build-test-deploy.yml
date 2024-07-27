@@ -51,6 +51,7 @@ jobs:
 
       - name: Get SonarQube URL
         id: get_sonarqube_url
+        if: always()
         run: echo "::set-output name=sonarqube_url::http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management"
 
   deploy:
@@ -84,6 +85,7 @@ jobs:
 
       - name: Get Maven Report URL
         id: get_maven_report_url
+        if: always()
         run: echo "::set-output name=maven_report_url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html"
 
   run_tests:
@@ -106,6 +108,7 @@ jobs:
 
       - name: Get Automation Test URL
         id: get_automation_test_url
+        if: always()
         run: echo "::set-output name=automation_test_url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
 
   send_notification:
