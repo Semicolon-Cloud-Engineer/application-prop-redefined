@@ -6,7 +6,7 @@ on:
       - dev
 
 env:
-  EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,ibrahim@semicolon.africa'
+  EMAILS: 'sam@semicolon.africa,joshua.o@semicolon.africa,martins@semicolon.africa,ibrahim@semicolon.africa'
   REPO_URL: 357586184453.dkr.ecr.eu-west-1.amazonaws.com/identity-management-dev-backend
   ECR_REPOSITORY: identity-management-dev-backend
   ECR_REPOSITORY_SYSTEST: identity-management-systest
@@ -89,7 +89,7 @@ jobs:
 
       - name: Get Maven Report URL
         id: get_maven_report_url
-        if: success()
+        if: always()
         run: |
           echo "maven_report_url_set=true" >> $GITHUB_OUTPUT
 
@@ -113,7 +113,7 @@ jobs:
 
       - name: Get Automation Test URL
         id: get_automation_test_url
-        if: success()
+        if: always()
         run: |
           echo "automation_test_url_set=true" >> $GITHUB_OUTPUT
 
