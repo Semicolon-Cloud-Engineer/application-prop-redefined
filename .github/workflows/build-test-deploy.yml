@@ -87,7 +87,7 @@ jobs:
 
       - name: Get Job URL
         if: always()
-        id: job_url
+        id: sonarqube_url
         run: echo "url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management"
 
             
@@ -155,7 +155,7 @@ jobs:
 
       - name: Get Job URL
         if: always()
-        id: job_url
+        id: maven_report_url
         run: echo "url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html"
 
 
@@ -205,9 +205,9 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SONARQUBE_URL: ${{ needs.build-and-analyze.outputs.job_url }}
-          MAVEN_REPORT_URL: ${{ needs.deploy-and-run.outputs.job_url }}
-          AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
+          SONARQUBE_URL: ${{ needs.build_and_analyze.outputs.sonarqube_url }}
+          MAVEN_REPORT_URL: ${{ needs.deploy.outputs.maven_report_url }}
+          AUTOMATION_TEST_URL: ${{ needs.run_tests.outputs.job_url }}
         run: |
          chmod +x .github/workflows/scripts/send_success_email.sh
           .github/workflows/scripts/send_success_email.sh \
