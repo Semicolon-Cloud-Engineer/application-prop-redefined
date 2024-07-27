@@ -9,7 +9,7 @@ TAG=$6
 BRANCH_NAME=$7
 COMMIT_AUTHOR=${8}
 SONARQUBE_URL=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
-MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
+MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/surefire-report.html
 AUTOMATION_TEST_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
    
 
