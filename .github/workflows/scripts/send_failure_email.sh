@@ -11,9 +11,9 @@ SONARQUBE_URL=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Managem
 MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
 AUTOMATION_TEST_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
       
-SONARQUBE_URL_SET=${12}
-MAVEN_REPORT_URL_SET=${13}
-AUTOMATION_TEST_URL_SET=${14}
+SONARQUBE_URL_SET=${9}
+MAVEN_REPORT_URL_SET=${10}
+AUTOMATION_TEST_URL_SET=${11}
 
 IFS=',' read -r -a email_array <<< "${EMAILS}"
 for email in "${email_array[@]}"
