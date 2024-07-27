@@ -175,22 +175,13 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SONARQUBE_URL: ${{ needs.build_and_analyze.outputs.sonarqube_url }}
-          MAVEN_REPORT_URL: ${{ needs.deploy.outputs.maven_report_url }}
-          AUTOMATION_TEST_URL: ${{ needs.run_tests.outputs.automation_test_url }}
         run: |
           echo "Sending failure email with the following details:"
           echo "SonarQube URL Set: $SONARQUBE_URL_SET"
-          echo "SonarQube URL: $SONARQUBE_URL"
           echo "Maven Report URL Set: $MAVEN_REPORT_URL_SET"
-          echo "Maven Report URL: $MAVEN_REPORT_URL"
           echo "Automation Test URL Set: $AUTOMATION_TEST_URL_SET"
-          echo "Automation Test URL: $AUTOMATION_TEST_URL"
           chmod +x .github/workflows/scripts/send_failure_email.sh
           .github/workflows/scripts/send_failure_email.sh \
-            "$SONARQUBE_URL" \
-            "$AUTOMATION_TEST_URL" \
-            "$MAVEN_REPORT_URL" \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
