@@ -26,13 +26,13 @@ do
   printf "Click on the links below to view your reports\n" >> /tmp/email.txt
   
   if [ -n "$SONARQUBE_URL" ]; then
-    printf "\nBuild and Analyze Job: $SONARQUBE_URL\n" >> /tmp/email.txt
+    printf "\nSonarqube Report: $SONARQUBE_URL\n" >> /tmp/email.txt
   fi
   if [ -n "$MAVEN_REPORT_URL" ]; then
-    printf "\nDeploy and Run Job: $MAVEN_REPORT_URL\n" >> /tmp/email.txt
+    printf "\nMaven Build Report: $MAVEN_REPORT_URL\n" >> /tmp/email.txt
   fi
   if [ -n "$AUTOMATION_TEST_URL" ]; then
-    printf "\nAutomation Test Job: $AUTOMATION_TEST_URL\n" >> /tmp/email.txt
+    printf "\nAutomation Test Report: $AUTOMATION_TEST_URL\n" >> /tmp/email.txt
   fi
   
   printf "\n\nRegards,\nThe Cloud Team" >> /tmp/email.txt
