@@ -19,9 +19,9 @@ env:
   DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
   MASTER_REALM_CLIENT_SECRET: ${{ secrets.MASTER_REALM_CLIENT_SECRET }}
   ADMIN_CLIENT_SECRET: ${{ secrets.ADMIN_CLIENT_SECRET }}
-  SONARQUBE_URL:   http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
-  AUTOMATION_TEST_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
-  MAVEN_REPORT_URL:  https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
+  # SONARQUBE_URL:   http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
+  # AUTOMATION_TEST_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
+  # MAVEN_REPORT_URL:  https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
 
 
 jobs:
@@ -86,8 +86,9 @@ jobs:
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
 
       - name: Get Job URL
+        if: always()
         id: job_url
-        run: echo "::set-output name=url::http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management"
+        run: echo "url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management"
 
             
   deploy:
@@ -153,8 +154,9 @@ jobs:
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
 
       - name: Get Job URL
+        if: always()
         id: job_url
-        run: echo "::set-output name=url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html"
+        run: echo "url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html"
 
 
   run_tests:
@@ -174,8 +176,9 @@ jobs:
           # Pass all necessary environment variables
           
       - name: Get Job URL
+        if: always()
         id: job_url
-        run: echo "::set-output name=url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
+        run: echo "url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
   
 
   send_notification:
@@ -207,7 +210,10 @@ jobs:
           AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
          chmod +x .github/workflows/scripts/send_success_email.sh
-          .github/workflows/scripts/send_success_email.sh "$SONARQUBE_URL" "$AUTOMATION_TEST_URL" "$MAVEN_REPORT_URL"\
+          .github/workflows/scripts/send_success_email.sh \
+            "$SONARQUBE_URL" \
+            "$AUTOMATION_TEST_URL" \
+            "$MAVEN_REPORT_URL"\
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
@@ -231,7 +237,10 @@ jobs:
           AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
           chmod +x .github/workflows/scripts/send_failure_email.sh
-          .github/workflows/scripts/send_failure_email.sh "$SONARQUBE_URL" "$AUTOMATION_TEST_URL" "$MAVEN_REPORT_URL" \
+          .github/workflows/scripts/send_failure_email.sh \
+            "$SONARQUBE_URL" \
+            "$AUTOMATION_TEST_URL" \
+            "$MAVEN_REPORT_URL" \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
