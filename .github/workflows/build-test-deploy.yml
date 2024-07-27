@@ -3,7 +3,7 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      - workflow
+      - dev
 
 env:
   EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,ibrahim@semicolon.africa'
@@ -84,6 +84,11 @@ jobs:
             PREMBLY_ID_TEST_BVN_NUMBER: ${{ secrets.PREMBLY_ID_TEST_BVN_NUMBER }}
             PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
+
+      - name: Get Job URL
+        id: job_url
+        run: echo "::set-output name=url::http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management"
+
             
   deploy:
     name: Deploy to dev
@@ -147,6 +152,11 @@ jobs:
             PREMBLY_ID_TEST_CAC_NUMBER: ${{ secrets.PREMBLY_ID_TEST_CAC_NUMBER }}
             EUREKA_INSTANCE_HOSTNAME: ${{ secrets.EUREKA_INSTANCE_HOSTNAME }}
 
+      - name: Get Job URL
+        id: job_url
+        run: echo "::set-output name=url::https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html"
+
+
   run_tests:
     name: Run Automation Tests
     needs: deploy
@@ -162,7 +172,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # Pass all necessary environment variables
-
+          
+      - name: Get Job URL
+        id: job_url
+        run: echo "::set-output name=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html"
   
 
   send_notification:
@@ -189,6 +202,9 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SONARQUBE_URL: ${{ needs.build-and-analyze.outputs.job_url }}
+          MAVEN_REPORT_URL: ${{ needs.deploy-and-run.outputs.job_url }}
+          AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
          chmod +x .github/workflows/scripts/send_success_email.sh
           .github/workflows/scripts/send_success_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
@@ -210,6 +226,9 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SONARQUBE_URL: ${{ needs.build-and-analyze.outputs.job_url }}
+          MAVEN_REPORT_URL: ${{ needs.deploy-and-run.outputs.job_url }}
+          AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
           chmod +x .github/workflows/scripts/send_failure_email.sh
           .github/workflows/scripts/send_failure_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
