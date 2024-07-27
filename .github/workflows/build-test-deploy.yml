@@ -28,7 +28,6 @@ jobs:
     name: Build and Analyze
     runs-on: ubuntu-latest
     outputs:
-      sonarqube_url: ${{ steps.get_sonarqube_url.outputs.sonarqube_url }}
       sonarqube_url_set: ${{ steps.get_sonarqube_url.outputs.sonarqube_url_set }}
 
     steps:
@@ -57,7 +56,6 @@ jobs:
         id: get_sonarqube_url
         if: always()
         run: |
-          echo "sonarqube_url=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management" >> $GITHUB_OUTPUT
           echo "sonarqube_url_set=true" >> $GITHUB_OUTPUT
 
   deploy:
@@ -65,7 +63,6 @@ jobs:
     needs: build_and_analyze
     runs-on: ubuntu-latest
     outputs:
-      maven_report_url: ${{ steps.get_maven_report_url.outputs.maven_report_url }}
       maven_report_url_set: ${{ steps.get_maven_report_url.outputs.maven_report_url_set }}
 
     steps:
@@ -94,7 +91,6 @@ jobs:
         id: get_maven_report_url
         if: success()
         run: |
-          echo "maven_report_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html" >> $GITHUB_OUTPUT
           echo "maven_report_url_set=true" >> $GITHUB_OUTPUT
 
   run_tests:
@@ -102,7 +98,6 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     outputs:
-      automation_test_url: ${{ steps.get_automation_test_url.outputs.automation_test_url }}
       automation_test_url_set: ${{ steps.get_automation_test_url.outputs.automation_test_url_set }}
 
     steps:
@@ -120,7 +115,6 @@ jobs:
         id: get_automation_test_url
         if: success()
         run: |
-          echo "automation_test_url=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html" >> $GITHUB_OUTPUT
           echo "automation_test_url_set=true" >> $GITHUB_OUTPUT
 
   send_notification:
@@ -146,9 +140,9 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SONARQUBE_URL: ${{ needs.build_and_analyze.outputs.sonarqube_url }}
-          MAVEN_REPORT_URL: ${{ needs.deploy.outputs.maven_report_url }}
-          AUTOMATION_TEST_URL: ${{ needs.run_tests.outputs.automation_test_url }}
+          SONARQUBE_URL:  http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
+          MAVEN_REPORT_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
+          AUTOMATION_TEST_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
         run: |
           echo "Sending success email with the following details:"
           echo "SonarQube URL Set: $SONARQUBE_URL_SET"
