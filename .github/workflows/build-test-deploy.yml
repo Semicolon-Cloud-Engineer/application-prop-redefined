@@ -207,7 +207,7 @@ jobs:
           AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
          chmod +x .github/workflows/scripts/send_success_email.sh
-          .github/workflows/scripts/send_success_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
+          .github/workflows/scripts/send_success_email.sh "$SONARQUBE_URL" "$AUTOMATION_TEST_URL" "$MAVEN_REPORT_URL"\
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
@@ -231,7 +231,7 @@ jobs:
           AUTOMATION_TEST_URL: ${{ needs.automation-test.outputs.job_url }}
         run: |
           chmod +x .github/workflows/scripts/send_failure_email.sh
-          .github/workflows/scripts/send_failure_email.sh "SONARQUBE_URL" "AUTOMATION_TEST_URL" "MAVEN_REPORT_URL"\
+          .github/workflows/scripts/send_failure_email.sh "$SONARQUBE_URL" "$AUTOMATION_TEST_URL" "$MAVEN_REPORT_URL" \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
