@@ -9,7 +9,7 @@ on:
       [ 'dev', 'main', 'prod-support' ]
 
 env:
-  EMAILS: 'sam@semicolon.africa,joshua.o@semicolon.africa,martins@semicolon.africa,emmanuel.e@semicolon.africa,damian@semicolon.africa,daniel@semicolon.africa'
+  EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,emmanuel.e@semicolon.africa,damian@semicolon.africa,daniel@semicolon.africa'
   REPO_URL: 357586184453.dkr.ecr.eu-west-1.amazonaws.com/identity-management-dev-backend
   ECR_REPOSITORY: identity-management-dev-backend
   ECR_REPOSITORY_SYSTEST: identity-management-systest
