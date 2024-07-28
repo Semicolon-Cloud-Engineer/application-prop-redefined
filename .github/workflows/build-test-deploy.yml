@@ -147,8 +147,11 @@ jobs:
 
 
       - name: Send build success email notification
-        #if: ${{ always() && needs.deploy.result == 'success' && needs.run_tests.result == 'success' }}
-        if: success()
+        if: >-
+          success() && 
+          needs.build_and_analyze.result == 'success' && 
+          needs.deploy.result == 'success' && 
+          needs.run_tests.result == 'success'
         env:
           SMTP_SERVER: semicolon.africa
           SMTP_PORT: 465
@@ -171,13 +174,17 @@ jobs:
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
             "${{ env.COMMIT_AUTHOR }}" \
-            "$COMMIT_MESSAGE" \
+            "${{ COMMIT_MESSAGE }}" \
             "$SONARQUBE_URL_SET" \
             "$MAVEN_REPORT_URL_SET" \
             "$AUTOMATION_TEST_URL_SET"
 
       - name: Send build failure email notification
-        if: failure()
+        if: >-
+          failure() || 
+          needs.build_and_analyze.result == 'failure' || 
+          needs.deploy.result == 'failure' || 
+          needs.run_tests.result == 'failure'
         env:
           SMTP_SERVER: semicolon.africa
           SMTP_PORT: 465
@@ -198,7 +205,7 @@ jobs:
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
             "${{ env.COMMIT_AUTHOR }}" \
-            "$COMMIT_MESSAGE" \
+            "${{ COMMIT_MESSAGE }}" \
             "$SONARQUBE_URL_SET" \
             "$MAVEN_REPORT_URL_SET" \
             "$AUTOMATION_TEST_URL_SET"
