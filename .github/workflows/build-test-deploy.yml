@@ -218,7 +218,7 @@ jobs:
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
-            "$secrets.SMTP_PASSWORD" \
+            "$SMTP_PASSWORD" \
             "${{ env.EMAILS }}" \
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
