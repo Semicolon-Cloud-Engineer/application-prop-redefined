@@ -123,6 +123,7 @@ jobs:
   send_notification:
     name: Send Email Notification
     needs: [build_and_analyze, deploy, run_tests]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
