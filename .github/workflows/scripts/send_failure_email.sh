@@ -14,6 +14,7 @@ AUTOMATION_TEST_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/k
 SONARQUBE_URL_SET=${9}
 MAVEN_REPORT_URL_SET=${10}
 AUTOMATION_TEST_URL_SET=${11}
+COMMIT_MESSAGE=${12}
 
 # Extract only the name from the COMMIT_AUTHOR
 ENGINEER_NAME=$(echo "$COMMIT_AUTHOR" | sed 's/ <.*//')
@@ -48,6 +49,7 @@ MIME-Version: 1.0
         <p><strong>ENGINEER:</strong> ${ENGINEER_NAME}</p>
         <p><strong>BRANCH:</strong> ${BRANCH_NAME}</p>
         <p><strong>TAG:</strong> ${TAG}</p>
+        <p><strong>COMMIT MESSAGE:</strong> ${COMMIT_MESSAGE}</p>
     </div>
 
     <div style="background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; padding: 20px;">

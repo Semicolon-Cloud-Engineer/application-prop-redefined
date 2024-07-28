@@ -10,6 +10,7 @@ COMMIT_AUTHOR=$8
 SONARQUBE_URL_SET=${9}
 MAVEN_REPORT_URL_SET=${10}
 AUTOMATION_TEST_URL_SET=${11}
+COMMIT_MESSAGE=${12}
 ENGINEER_NAME=$(echo "$COMMIT_AUTHOR" | sed 's/ <.*//')
 SONARQUBE_URL=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
 MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/surefire-report.html
@@ -43,6 +44,7 @@ MIME-Version: 1.0
         <p><strong>ENGINEER:</strong> ${ENGINEER_NAME}</p>
         <p><strong>BRANCH:</strong> ${BRANCH_NAME}</p>
         <p><strong>TAG:</strong> ${TAG}</p>
+        <p><strong>COMMIT MESSAGE:</strong> ${COMMIT_MESSAGE}</p>
     </div>
 
     <div style="background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; padding: 20px;">

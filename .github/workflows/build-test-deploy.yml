@@ -3,10 +3,10 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      [ 'dev', 'main', 'prod-support']
+      [ 'dev', 'main', 'prod-support', 'commit-message']
   pull_request:
     branches: 
-      [ 'dev', 'main', 'prod-support' ]
+      [ 'dev', 'main', 'prod-support', 'commit-message' ]
 
 env:
   EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,emmanuel.e@semicolon.africa,damian@semicolon.africa,daniel@semicolon.africa'
@@ -138,7 +138,8 @@ jobs:
           echo "AUTOMATION_TEST_URL_SET=${{ needs.run_tests.outputs.automation_test_url_set }}" >> $GITHUB_ENV
 
       - name: Send build success email notification
-        if: ${{ always() && needs.deploy.result == 'success' && needs.run_tests.result == 'success' }}
+        #if: ${{ always() && needs.deploy.result == 'success' && needs.run_tests.result == 'success' }}
+        if: success()
         env:
           SMTP_SERVER: semicolon.africa
           SMTP_PORT: 465
