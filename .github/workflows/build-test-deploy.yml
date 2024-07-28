@@ -140,7 +140,7 @@ jobs:
           echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')" >> $GITHUB_ENV
           COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr '\n' ' ' | sed 's/"/\\"/g')
           echo "COMMIT_MESSAGE=$(echo \"$COMMIT_MESSAGE\")" >> $GITHUB_ENV
-          echo "This is the Commit Message: ${{ env.COMMIT_MESSAGE }}"
+          echo "This is the Commit Message: $COMMIT_MESSAGE"
           echo "SONARQUBE_URL_SET=${{ needs.build_and_analyze.outputs.sonarqube_url_set }}" >> $GITHUB_ENV
           echo "MAVEN_REPORT_URL_SET=${{ needs.deploy.outputs.maven_report_url_set }}" >> $GITHUB_ENV
           echo "AUTOMATION_TEST_URL_SET=${{ needs.run_tests.outputs.automation_test_url_set }}" >> $GITHUB_ENV
