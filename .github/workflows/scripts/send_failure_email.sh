@@ -15,7 +15,15 @@ SONARQUBE_URL_SET=${9}
 MAVEN_REPORT_URL_SET=${10}
 AUTOMATION_TEST_URL_SET=${11}
 COMMIT_MESSAGE=${12}
+# Debug output
+echo "Debug: COMMIT_MESSAGE received as: $COMMIT_MESSAGE"
+
+# Unescape the commit message
 COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | sed 's/\\(/(/g; s/\\)/)/g; s/\\#/#/g')
+
+# More debug output
+echo "Debug: COMMIT_MESSAGE after unescaping: $COMMIT_MESSAGE"
+
 
 
 # Extract only the name from the COMMIT_AUTHOR
