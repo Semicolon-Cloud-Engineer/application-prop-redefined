@@ -15,6 +15,9 @@ ENGINEER_NAME=$(echo "$COMMIT_AUTHOR" | sed 's/ <.*//')
 SONARQUBE_URL=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
 MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/surefire-report.html
 AUTOMATION_TEST_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
+COMMIT_MESSAGE=$(echo "$COMMIT_MESSAGE" | sed 's/\\(/(/g; s/\\)/)/g; s/\\#/#/g')
+
+
 
 IFS=',' read -r -a email_array <<< "${EMAILS}"
 for email in "${email_array[@]}"
