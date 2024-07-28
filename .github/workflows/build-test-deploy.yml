@@ -160,7 +160,6 @@ jobs:
         run: |
           echo "Sending success email with the following details:"
           echo "This is the Commit Message: $COMMIT_MESSAGE"
-          echo "This is the second Commit Message: " ${{ env.COMMIT_MESSAGE }}
           echo "SonarQube URL Set: $SONARQUBE_URL_SET"
           echo "Maven Report URL Set: $MAVEN_REPORT_URL_SET"
           echo "Automation Test URL Set: $AUTOMATION_TEST_URL_SET"
