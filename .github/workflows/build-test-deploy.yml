@@ -157,6 +157,13 @@ jobs:
           echo "MAVEN_REPORT_URL_SET=${{ needs.deploy.outputs.maven_report_url_set }}" >> $GITHUB_ENV
           echo "AUTOMATION_TEST_URL_SET=${{ needs.run_tests.outputs.automation_test_url_set }}" >> $GITHUB_ENV
 
+      
+      - name: Debug - Print environment variables
+        run: |
+          echo "TAG: ${{ env.TAG }}"
+          echo "BRANCH_NAME: ${{ env.BRANCH_NAME }}"
+          echo "COMMIT_AUTHOR: ${{ env.COMMIT_AUTHOR }}"
+          echo "COMMIT_MESSAGE: ${{ env.COMMIT_MESSAGE }}"
 
       - name: Send build success email notification
         if: >-
@@ -208,16 +215,16 @@ jobs:
           echo "Automation Test URL Set: $AUTOMATION_TEST_URL_SET"
           chmod +x .github/workflows/scripts/send_failure_email.sh
           .github/workflows/scripts/send_failure_email.sh \
-            "$SMTP_SERVER" \
-            "$SMTP_PORT" \
-            "$SMTP_USERNAME" \
-            "$SMTP_PASSWORD" \
+            "${{ secrets.SMTP_SERVER }}" \
+            "${{ secrets.SMTP_PORT }}" \
+            "${{ secrets.SMTP_USERNAME }}" \
+            "${{ secrets.SMTP_PASSWORD }}" \
             "${{ env.EMAILS }}" \
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
             "${{ env.COMMIT_AUTHOR }}" \
-            "${{ env.COMMIT_MESSAGE }}" \
-            "$SONARQUBE_URL_SET" \
-            "$MAVEN_REPORT_URL_SET" \
-            "$AUTOMATION_TEST_URL_SET" 
+            "${{ env.SONARQUBE_URL_SET }}" \
+            "${{ env.MAVEN_REPORT_URL_SET }}" \
+            "${{ env.AUTOMATION_TEST_URL_SET }}" \
+            "${{ env.COMMIT_MESSAGE }}" 
             
