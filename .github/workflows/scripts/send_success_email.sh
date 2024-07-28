@@ -1,5 +1,4 @@
 #!/bin/bash
-
 SMTP_SERVER=$1
 SMTP_PORT=$2
 SMTP_USERNAME=$3
@@ -7,39 +6,77 @@ SMTP_PASSWORD=$4
 EMAILS=$5
 TAG=$6
 BRANCH_NAME=$7
-COMMIT_AUTHOR=${8}
+COMMIT_AUTHOR=$8
+SONARQUBE_URL_SET=${9}
+MAVEN_REPORT_URL_SET=${10}
+AUTOMATION_TEST_URL_SET=${11}
+ENGINEER_NAME=$(echo "$COMMIT_AUTHOR" | sed 's/ <.*//')
 SONARQUBE_URL=http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
 MAVEN_REPORT_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/surefire-report.html
 AUTOMATION_TEST_URL=https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
-   
 
 IFS=',' read -r -a email_array <<< "${EMAILS}"
 for email in "${email_array[@]}"
 do
-  echo "From: builds@semicolon.africa" > /tmp/email.txt
-  echo "To: $email" >> /tmp/email.txt
-  echo "Subject: Wow, Successful Build " >> /tmp/email.txt
-  printf "Oooops, Your recent build in Identity Management Backend was successful.\n\n" >> /tmp/email.txt
-  printf "Branch: ${BRANCH_NAME}\n" >> /tmp/email.txt
-  printf "Author: ${COMMIT_AUTHOR}\n" >> /tmp/email.txt
-  printf "\nTAG: ${TAG}\n\n" >> /tmp/email.txt
-  printf "Click on the links below to view your reports\n" >> /tmp/email.txt
-  
-  if [ -n "$SONARQUBE_URL" ]; then
-    printf "\nSonarqube Report: $SONARQUBE_URL\n" >> /tmp/email.txt
+  cat << EOF > /tmp/email.html
+From: builds@semicolon.africa
+To: $email
+Subject: Build Success
+Content-Type: text/html
+MIME-Version: 1.0
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Success</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; padding: 20px; margin-bottom: 20px;">
+        <h1 style="color: #155724; margin-top: 0;">Fantastic! Successful Build</h1>
+        <p style="margin-bottom: 10px;">Congratulations, Your recent build in Identity Management Backend was successful.</p>
+    </div>
+    
+    <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 5px; padding: 20px; margin-bottom: 20px;">
+        <h2 style="margin-top: 0;">Build Details</h2>
+        <p><strong>ENGINEER:</strong> ${ENGINEER_NAME}</p>
+        <p><strong>BRANCH:</strong> ${BRANCH_NAME}</p>
+        <p><strong>TAG:</strong> ${TAG}</p>
+    </div>
+
+    <div style="background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; padding: 20px;">
+        <h2 style="margin-top: 0;">Reports</h2>
+        <p>Click on the links below to view your reports:</p>
+        <ul style="padding-left: 20px;">
+EOF
+
+  if [ "$SONARQUBE_URL_SET" = "true" ]; then
+    echo "<li><a href=\"$SONARQUBE_URL\" style=\"color: #007bff; text-decoration: none;\">Sonarqube Report</a></li>" >> /tmp/email.html
   fi
-  if [ -n "$MAVEN_REPORT_URL" ]; then
-    printf "\nMaven Build Report: $MAVEN_REPORT_URL\n" >> /tmp/email.txt
+  if [ "$MAVEN_REPORT_URL_SET" = "true" ]; then
+    echo "<li><a href=\"$MAVEN_REPORT_URL\" style=\"color: #007bff; text-decoration: none;\">Maven Build Report</a></li>" >> /tmp/email.html
   fi
-  if [ -n "$AUTOMATION_TEST_URL" ]; then
-    printf "\nAutomation Test Report: $AUTOMATION_TEST_URL\n" >> /tmp/email.txt
+  if [ "$AUTOMATION_TEST_URL_SET" = "true" ]; then
+    echo "<li><a href=\"$AUTOMATION_TEST_URL\" style=\"color: #007bff; text-decoration: none;\">Automation Test Report</a></li>" >> /tmp/email.html
   fi
-  
-  printf "\n\nRegards,\nThe Cloud Team" >> /tmp/email.txt
+
+  cat << EOF >> /tmp/email.html
+        </ul>
+    </div>
+
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ced4da;">
+        <p style="margin-bottom: 5px;">Regards,</p>
+        <p style="margin-top: 0;"><strong>The Cloud Team</strong></p>
+    </div>
+</body>
+</html>
+EOF
+
   curl --ssl-reqd \
     --url "smtps://${SMTP_SERVER}:${SMTP_PORT}" \
     --mail-from "builds@semicolon.africa" \
     --mail-rcpt "$email" \
     --user "${SMTP_USERNAME}:${SMTP_PASSWORD}" \
-    --upload-file /tmp/email.txt
+    --upload-file /tmp/email.html
 done

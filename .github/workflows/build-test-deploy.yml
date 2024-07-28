@@ -3,7 +3,7 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      [ 'dev', 'main', 'prod-support' ]
+      [ 'dev', 'main', 'prod-support']
   pull_request:
     branches: 
       [ 'dev', 'main', 'prod-support' ]
@@ -122,10 +122,8 @@ jobs:
 
   send_notification:
     name: Send Email Notification
-   #needs: [build_and_analyze, deploy, run_tests]
-    needs: [ deploy, run_tests]
+    needs: [build_and_analyze, deploy, run_tests]
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - uses: actions/checkout@v3
       - name: Set environment variables
@@ -144,22 +142,13 @@ jobs:
           SMTP_PORT: 465
           SMTP_USERNAME: builds@semicolon.africa
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SONARQUBE_URL:  http://sonarqube.enum.africa/dashboard?id=Karrabo-Identity-Management
-          MAVEN_REPORT_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/maven-reports/new-reports/index.html
-          AUTOMATION_TEST_URL: https://semicolon-build-reports.s3.eu-west-1.amazonaws.com/karrabo/identity-management/automation-tests-result/report-pytest-results.html
         run: |
           echo "Sending success email with the following details:"
           echo "SonarQube URL Set: $SONARQUBE_URL_SET"
-          echo "SonarQube URL: $SONARQUBE_URL"
           echo "Maven Report URL Set: $MAVEN_REPORT_URL_SET"
-          echo "Maven Report URL: $MAVEN_REPORT_URL"
           echo "Automation Test URL Set: $AUTOMATION_TEST_URL_SET"
-          echo "Automation Test URL: $AUTOMATION_TEST_URL"
           chmod +x .github/workflows/scripts/send_success_email.sh
           .github/workflows/scripts/send_success_email.sh \
-            "$SONARQUBE_URL" \
-            "$AUTOMATION_TEST_URL" \
-            "$MAVEN_REPORT_URL" \
             "$SMTP_SERVER" \
             "$SMTP_PORT" \
             "$SMTP_USERNAME" \
