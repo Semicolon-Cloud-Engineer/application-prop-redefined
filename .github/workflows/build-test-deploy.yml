@@ -173,7 +173,7 @@ jobs:
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
             "${{ env.COMMIT_AUTHOR }}" \
-            "${{ COMMIT_MESSAGE }}" \
+            "${{ env.COMMIT_MESSAGE }}" \
             "$SONARQUBE_URL_SET" \
             "$MAVEN_REPORT_URL_SET" \
             "$AUTOMATION_TEST_URL_SET"
@@ -204,7 +204,7 @@ jobs:
             "${{ env.TAG }}" \
             "${{ env.BRANCH_NAME }}" \
             "${{ env.COMMIT_AUTHOR }}" \
-            "${{ COMMIT_MESSAGE }}" \
+            "${{ env.COMMIT_MESSAGE }}" \
             "$SONARQUBE_URL_SET" \
             "$MAVEN_REPORT_URL_SET" \
             "$AUTOMATION_TEST_URL_SET"
