@@ -138,8 +138,8 @@ jobs:
           fi
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')" >> $GITHUB_ENV
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr '\n' ' ' | sed 's/"/\\"/g')
-          echo "COMMIT_MESSAGE=$(echo \"$COMMIT_MESSAGE\")" >> $GITHUB_ENV
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr '\n' ' ' | sed 's/"/\\"/g' | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/#/\\#/g')
+          echo "COMMIT_MESSAGE=\"$COMMIT_MESSAGE\"" >> $GITHUB_ENV
           echo "This is the Commit Message: $COMMIT_MESSAGE"
           echo "SONARQUBE_URL_SET=${{ needs.build_and_analyze.outputs.sonarqube_url_set }}" >> $GITHUB_ENV
           echo "MAVEN_REPORT_URL_SET=${{ needs.deploy.outputs.maven_report_url_set }}" >> $GITHUB_ENV
