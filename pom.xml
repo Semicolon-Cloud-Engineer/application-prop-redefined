@@ -244,9 +244,17 @@
         	<artifactId>maven-site-plugin</artifactId>
         	<version>3.9.1</version>
       </plugin>
-		
 
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application-local.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 	 <reporting>
