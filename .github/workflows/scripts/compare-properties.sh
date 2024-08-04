@@ -1,13 +1,8 @@
 #!/bin/bash
 
-# Get the root directory of the git repository
-ROOT_DIR=$(git rev-parse --show-toplevel)
-
-# Set the directory containing the properties files
-PROPERTIES_DIR="$ROOT_DIR/src/main/resources"
-
-# Define the properties files to compare
-FILES=("$PROPERTIES_DIR/application.properties" "$PROPERTIES_DIR/application-local.properties" "$PROPERTIES_DIR/application-dev.properties" "$PROPERTIES_DIR/application-uat.properties" "$PROPERTIES_DIR/application-prod.properties")
+# Define the directory and properties files to compare
+DIRECTORY="src/main/resources"
+FILES=("application.properties" "application-local.properties" "application-dev.properties" "application-uat.properties" "application-prod.properties")
 DIFFERENCES_FOUND=false
 
 # Fetch the target branch (the base branch of the PR)
@@ -15,19 +10,21 @@ TARGET_BRANCH=$1
 
 # Compare each properties file with the target branch
 for FILE in "${FILES[@]}"; do
-  if [[ -f $FILE ]]; then
-    echo "Comparing $FILE..."
-    git diff $TARGET_BRANCH -- $FILE > diff_output_$FILE.txt
-    if [[ -s diff_output_$FILE.txt ]]; then
-      echo "Differences found in $FILE"
-      cat diff_output_$FILE.txt
+  FULL_PATH="$DIRECTORY/$FILE"
+  if [[ -f $FULL_PATH ]]; then
+    echo "Comparing $FULL_PATH..."
+    FILENAME=$(basename $FILE)
+    git diff $TARGET_BRANCH -- $FULL_PATH > diff_output_$FILENAME.txt
+    if [[ -s diff_output_$FILENAME.txt ]]; then
+      echo "Differences found in $FULL_PATH"
+      cat diff_output_$FILENAME.txt
       DIFFERENCES_FOUND=true
     else
-      echo "No differences found in $FILE"
-      rm diff_output_$FILE.txt
+      echo "No differences found in $FULL_PATH"
+      rm diff_output_$FILENAME.txt
     fi
   else
-    echo "$FILE does not exist in the repository."
+    echo "$FULL_PATH does not exist in the repository."
   fi
 done
 
