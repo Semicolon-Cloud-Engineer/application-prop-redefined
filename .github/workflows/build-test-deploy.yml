@@ -3,10 +3,10 @@ name: Deploy to Dev Environment
 on:
   push:
     branches: 
-      [ 'dev', 'main', 'prod-support']
+      [ 'dev', 'main', 'prod-support', 'application-properties']
   pull_request:
     branches: 
-      [ 'dev', 'main', 'prod-support' ]
+      [ 'dev', 'main', 'prod-support', 'application-properties' ]
 
 env:
   EMAILS: 'joshua.o@semicolon.africa,martins@semicolon.africa,emmanuel.e@semicolon.africa,damian@semicolon.africa,daniel@semicolon.africa'
