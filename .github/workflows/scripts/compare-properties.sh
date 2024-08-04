@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the properties files to compare
-FILES=("application.properties" "application-local.properties" "application-dev.properties" "application-uat.properties" "application-prod.properties")
+FILES=("src/main/resources/application.properties" "src/main/resources/application-local.properties" "src/main/resources/application-dev.properties" "src/main/resources/application-uat.properties" "src/main/resources/application-prod.properties")
 DIFFERENCES_FOUND=false
 
 # Fetch the target branch (the base branch of the PR)
