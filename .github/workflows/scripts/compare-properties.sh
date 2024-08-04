@@ -1,7 +1,13 @@
 #!/bin/bash
 
+# Get the root directory of the git repository
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
+# Set the directory containing the properties files
+PROPERTIES_DIR="$ROOT_DIR/src/main/resources"
+
 # Define the properties files to compare
-FILES=("src/main/resources/application.properties" "src/main/resources/application-local.properties" "src/main/resources/application-dev.properties" "src/main/resources/application-uat.properties" "src/main/resources/application-prod.properties")
+FILES=("$PROPERTIES_DIR/application.properties" "$PROPERTIES_DIR/application-local.properties" "$PROPERTIES_DIR/application-dev.properties" "$PROPERTIES_DIR/application-uat.properties" "$PROPERTIES_DIR/application-prod.properties")
 DIFFERENCES_FOUND=false
 
 # Fetch the target branch (the base branch of the PR)
